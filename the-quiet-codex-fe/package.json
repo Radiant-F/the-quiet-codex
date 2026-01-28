@@ -1,0 +1,46 @@
+{
+  "name": "the-quiet-codex-fe",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "react-router dev",
+    "build": "tsc -b && react-router build",
+    "start": "react-router-serve build/server/index.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc -b --noEmit",
+    "validate": "bun run typecheck && bun run lint",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@react-router/node": "^7.13.0",
+    "@react-router/serve": "^7.13.0",
+    "@reduxjs/toolkit": "^2.11.2",
+    "@tailwindcss/vite": "^4.1.18",
+    "isbot": "^5.1.34",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-hook-form": "^7.71.1",
+    "react-icons": "^5.5.0",
+    "react-redux": "^9.2.0",
+    "react-router": "^7.13.0",
+    "react-router-dom": "^7.13.0",
+    "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@react-router/dev": "^7.13.0",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react-swc": "^4.2.2",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.46.4",
+    "vite": "^7.2.4"
+  }
+}

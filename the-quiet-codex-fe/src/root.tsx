@@ -1,0 +1,81 @@
+import {
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  isRouteErrorResponse,
+} from "react-router";
+import type { Route } from "./+types/root";
+import "./index.css";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
+import { AuthBootstrap } from "./features/auth";
+import { I18nProvider } from "./i18n";
+import { ThemeProvider } from "./theme";
+
+export function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <head>
+        <title>The Quiet Codex</title>
+        <meta property="og:title" content="The Quiet Codex" />
+        <meta
+          property="og:description"
+          content="Your personal productivity companion."
+        />
+        <meta property="og:type" content="website" />
+        <link rel="icon" href="/vite.svg" />
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        <Provider store={store}>
+          <ThemeProvider>
+            <I18nProvider>
+              <AuthBootstrap />
+              {children}
+            </I18nProvider>
+          </ThemeProvider>
+        </Provider>
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </html>
+  );
+}
+
+export default function App() {
+  return <Outlet />;
+}
+
+export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+  let message = "Oops!";
+  let details = "An unexpected error occurred.";
+  let stack: string | undefined;
+
+  if (isRouteErrorResponse(error)) {
+    message = error.status === 404 ? "404" : "Error";
+    details =
+      error.status === 404
+        ? "The requested page could not be found."
+        : error.statusText || details;
+  } else if (import.meta.env.DEV && error && error instanceof Error) {
+    details = error.message;
+    stack = error.stack;
+  }
+
+  return (
+    <main className="pt-16 p-4 container mx-auto theme-page min-h-screen">
+      <h1 className="text-3xl font-bold mb-4">{message}</h1>
+      <p className="text-lg mb-4">{details}</p>
+      {stack && (
+        <pre className="w-full p-4 overflow-x-auto bg-black/50 rounded-lg">
+          <code>{stack}</code>
+        </pre>
+      )}
+    </main>
+  );
+}
