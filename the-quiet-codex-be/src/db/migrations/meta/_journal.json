@@ -8,6 +8,20 @@
       "when": 1769509838706,
       "tag": "0000_next_queen_noir",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1769589787770,
+      "tag": "0001_fantastic_nightcrawler",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1769596564841,
+      "tag": "0002_boring_skullbuster",
+      "breakpoints": true
     }
   ]
 }

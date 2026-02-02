@@ -14,4 +14,5 @@ export const env = {
   REFRESH_TOKEN_EXPIRES_IN: getEnvVar("REFRESH_TOKEN_EXPIRES_IN", "7d"),
   PORT: parseInt(getEnvVar("PORT", "3000"), 10),
   NODE_ENV: getEnvVar("NODE_ENV", "development"),
+  CORS_ORIGIN: getEnvVar("CORS_ORIGIN", "http://localhost:5173"),
 } as const;

@@ -1,11 +1,11 @@
 export interface TokenResponse {
   accessToken: string;
+  user: User;
 }
 
 export interface User {
   id: string;
-  email: string;
-  name?: string;
+  username: string;
 }
 
 export interface AuthState {
@@ -15,23 +15,22 @@ export interface AuthState {
   isLoading: boolean;
 }
 
-export interface LoginRequest {
-  email: string;
+export interface SigninRequest {
+  username: string;
   password: string;
 }
 
-export interface RegisterRequest {
-  email: string;
+export interface SignupRequest {
+  username: string;
   password: string;
-  name?: string;
 }
 
-export interface LoginResponse {
+export interface SigninResponse {
   accessToken: string;
   user: User;
 }
 
-export interface RegisterResponse {
+export interface SignupResponse {
   accessToken: string;
   user: User;
 }

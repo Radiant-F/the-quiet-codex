@@ -1,13 +1,15 @@
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import {
   userResponse,
   updateUserBody,
   errorResponse,
   messageResponse,
+  uploadProfilePictureResponse,
+  deleteProfilePictureResponse,
 } from "./user.schema";
 import { userService } from "./user.service";
 import { authGuard } from "../auth/auth.guard";
-import { ConflictError } from "../../lib/errors";
+import { ConflictError, NotFoundError } from "../../lib/errors";
 
 export const userRoutes = new Elysia({ prefix: "/users" })
   .use(authGuard)
@@ -53,6 +55,79 @@ export const userRoutes = new Elysia({ prefix: "/users" })
       detail: {
         summary: "Update current user profile",
         description: "Updates the authenticated user's profile",
+        tags: ["Users"],
+        security: [{ bearerAuth: [] }],
+      },
+    },
+  )
+  .post(
+    "/me/profile-picture",
+    async ({ user, body, set }) => {
+      try {
+        const { file } = body;
+        return await userService.uploadProfilePicture(user.id, file);
+      } catch (err) {
+        if (err instanceof ConflictError) {
+          set.status = 400;
+          return { message: err.message };
+        }
+        if (err instanceof NotFoundError) {
+          set.status = 404;
+          return { message: err.message };
+        }
+        throw err;
+      }
+    },
+    {
+      body: t.Object({
+        file: t.File({
+          type: [
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "image/webp",
+            "image/avif",
+          ],
+          maxSize: "5m",
+        }),
+      }),
+      response: {
+        200: uploadProfilePictureResponse,
+        400: errorResponse,
+        401: errorResponse,
+        404: errorResponse,
+      },
+      detail: {
+        summary: "Upload profile picture",
+        description:
+          "Upload a profile picture for the authenticated user. Image will be automatically optimized (resized to 512x512, compressed, and converted to optimal format).",
+        tags: ["Users"],
+        security: [{ bearerAuth: [] }],
+      },
+    },
+  )
+  .delete(
+    "/me/profile-picture",
+    async ({ user, set }) => {
+      try {
+        return await userService.deleteProfilePicture(user.id);
+      } catch (err) {
+        if (err instanceof NotFoundError) {
+          set.status = 404;
+          return { message: err.message };
+        }
+        throw err;
+      }
+    },
+    {
+      response: {
+        200: deleteProfilePictureResponse,
+        401: errorResponse,
+        404: errorResponse,
+      },
+      detail: {
+        summary: "Delete profile picture",
+        description: "Deletes the authenticated user's profile picture",
         tags: ["Users"],
         security: [{ bearerAuth: [] }],
       },

@@ -1,48 +1,50 @@
 import { apiSlice } from "@/api/apiSlice";
 import type {
-  LoginRequest,
-  LoginResponse,
-  RegisterRequest,
-  RegisterResponse,
+  SigninRequest,
+  SigninResponse,
+  SignupRequest,
+  SignupResponse,
+  TokenResponse,
+  User,
 } from "../auth";
 
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    login: builder.mutation<LoginResponse, LoginRequest>({
+    signin: builder.mutation<SigninResponse, SigninRequest>({
       query: (credentials) => ({
-        url: "/auth/login",
+        url: "/auth/signin",
         method: "POST",
         body: credentials,
       }),
     }),
-    register: builder.mutation<RegisterResponse, RegisterRequest>({
+    signup: builder.mutation<SignupResponse, SignupRequest>({
       query: (data) => ({
-        url: "/auth/register",
+        url: "/auth/signup",
         method: "POST",
         body: data,
       }),
     }),
-    logout: builder.mutation<void, void>({
+    logout: builder.mutation<{ message: string }, void>({
       query: () => ({
         url: "/auth/logout",
         method: "POST",
       }),
     }),
-    refresh: builder.mutation<{ accessToken: string }, void>({
+    refresh: builder.mutation<TokenResponse, void>({
       query: () => ({
         url: "/auth/refresh",
         method: "POST",
       }),
     }),
-    getMe: builder.query<{ user: { id: string; email: string } }, void>({
-      query: () => "/user/me",
+    getMe: builder.query<User, void>({
+      query: () => "/users/me",
     }),
   }),
 });
 
 export const {
-  useLoginMutation,
-  useRegisterMutation,
+  useSigninMutation,
+  useSignupMutation,
   useLogoutMutation,
   useRefreshMutation,
   useGetMeQuery,

@@ -1,10 +1,24 @@
 import { Elysia, t } from "elysia";
+import { cors } from "@elysiajs/cors";
 import { openapi } from "@elysiajs/openapi";
 import { errorHandler } from "./plugins/error-handler";
 import { authRoutes } from "./modules/auth/auth.routes";
 import { userRoutes } from "./modules/user/user.routes";
+import {
+  publicArticleRoutes_,
+  protectedArticleRoutes_,
+} from "./modules/article/article.routes";
+import { env } from "./lib/env";
 
 export const app = new Elysia()
+  .use(
+    cors({
+      origin: env.CORS_ORIGIN,
+      credentials: true,
+      allowedHeaders: ["Content-Type", "Authorization"],
+      methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    }),
+  )
   .use(
     openapi({
       path: "/docs",
@@ -18,6 +32,7 @@ export const app = new Elysia()
           { name: "Health", description: "Health check endpoints" },
           { name: "Auth", description: "Authentication endpoints" },
           { name: "Users", description: "User management endpoints" },
+          { name: "Articles", description: "Article management endpoints" },
         ],
         components: {
           securitySchemes: {
@@ -50,6 +65,8 @@ export const app = new Elysia()
     },
   )
   .use(authRoutes)
-  .use(userRoutes);
+  .use(userRoutes)
+  .use(publicArticleRoutes_)
+  .use(protectedArticleRoutes_);
 
 export type App = typeof app;

@@ -17,11 +17,14 @@
     "db:seed": "bun run src/db/seed.ts"
   },
   "dependencies": {
+    "@elysiajs/cors": "^1.4.1",
     "@elysiajs/eden": "^1.4.6",
     "@elysiajs/jwt": "^1.4.0",
     "@elysiajs/openapi": "^1.4.14",
+    "cloudinary": "^2.9.0",
     "drizzle-orm": "^0.45.1",
     "elysia": "latest",
+    "isomorphic-dompurify": "^2.35.0",
     "postgres": "^3.4.8"
   },
   "devDependencies": {

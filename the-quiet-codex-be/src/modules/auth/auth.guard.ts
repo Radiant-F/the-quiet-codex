@@ -7,7 +7,7 @@ import { UnauthorizedError } from "../../lib/errors";
 
 export const authGuard = new Elysia({ name: "authGuard" })
   .use(jwtPlugin)
-  .derive({ as: "global" }, async ({ accessJwt, headers, set }) => {
+  .derive({ as: "scoped" }, async ({ accessJwt, headers, set }) => {
     const authorization = headers.authorization;
 
     if (!authorization?.startsWith("Bearer ")) {

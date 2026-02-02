@@ -14,23 +14,15 @@ export function AuthBootstrap(): null {
           authApi.endpoints.refresh.initiate(),
         ).unwrap();
 
-        if (refreshResult?.accessToken) {
-          // Get user info
-          const meResult = await dispatch(
-            authApi.endpoints.getMe.initiate(),
-          ).unwrap();
-
-          if (meResult?.user) {
-            dispatch(
-              setCredentials({
-                accessToken: refreshResult.accessToken,
-                user: {
-                  id: meResult.user.id,
-                  email: meResult.user.email,
-                },
-              }),
-            );
-          }
+        if (refreshResult?.accessToken && refreshResult?.user) {
+          dispatch(
+            setCredentials({
+              accessToken: refreshResult.accessToken,
+              user: refreshResult.user,
+            }),
+          );
+        } else {
+          dispatch(setLoading(false));
         }
       } catch {
         // User not authenticated, that's fine

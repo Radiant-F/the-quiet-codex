@@ -2,6 +2,11 @@ import { eq } from "drizzle-orm";
 import { db } from "../../db";
 import { users, type User, type NewUser } from "../../db/schema";
 
+interface ProfilePictureUpdate {
+  profilePictureUrl: string | null;
+  profilePicturePublicId: string | null;
+}
+
 export const userRepository = {
   async findById(id: string): Promise<User | undefined> {
     const [user] = await db
@@ -25,6 +30,22 @@ export const userRepository = {
     const [user] = await db
       .update(users)
       .set({ ...data, updatedAt: new Date() })
+      .where(eq(users.id, id))
+      .returning();
+    return user;
+  },
+
+  async updateProfilePicture(
+    id: string,
+    data: ProfilePictureUpdate,
+  ): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({
+        profilePictureUrl: data.profilePictureUrl,
+        profilePicturePublicId: data.profilePicturePublicId,
+        updatedAt: new Date(),
+      })
       .where(eq(users.id, id))
       .returning();
     return user;
