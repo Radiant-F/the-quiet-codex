@@ -1,0 +1,10 @@
+[build]
+builder = "nixpacks"
+buildCommand = "bun install && bun run build && bun run db:migrate"
+
+[deploy]
+startCommand = "bun run start"
+healthcheckPath = "/"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
