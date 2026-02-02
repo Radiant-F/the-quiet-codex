@@ -3,6 +3,7 @@ import {
   useContext,
   useState,
   useEffect,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 
@@ -280,17 +281,32 @@ function getStoredLocale(): Locale {
   return "en";
 }
 
+// Hook to safely detect if we're on the client after hydration
+function useHydrated() {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+}
+
 export function I18nProvider({ children }: { children: ReactNode }) {
+  const isHydrated = useHydrated();
   const [locale, setLocaleState] = useState<Locale>("en");
 
+  // Only read from localStorage after hydration
   useEffect(() => {
-    const storedLocale = getStoredLocale();
-    setLocaleState(storedLocale);
-  }, []);
+    if (isHydrated) {
+      const storedLocale = getStoredLocale();
+      setLocaleState(storedLocale);
+    }
+  }, [isHydrated]);
 
   const setLocale = (newLocale: Locale) => {
     setLocaleState(newLocale);
-    localStorage.setItem(STORAGE_KEY, newLocale);
+    if (typeof window !== "undefined") {
+      localStorage.setItem(STORAGE_KEY, newLocale);
+    }
   };
 
   const t = <K extends keyof MessageKeys>(

@@ -3,6 +3,7 @@ import {
   useContext,
   useEffect,
   useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 
@@ -34,16 +35,31 @@ function getStoredMode(): ThemeMode {
   return "system";
 }
 
+// Hook to safely detect if we're on the client after hydration
+function useHydrated() {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
+  const isHydrated = useHydrated();
   const [mode, setModeState] = useState<ThemeMode>("system");
   const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("dark");
 
+  // Only read from localStorage after hydration
   useEffect(() => {
-    const storedMode = getStoredMode();
-    setModeState(storedMode);
-  }, []);
+    if (isHydrated) {
+      const storedMode = getStoredMode();
+      setModeState(storedMode);
+    }
+  }, [isHydrated]);
 
   useEffect(() => {
+    if (!isHydrated) return;
+
     const updateTheme = () => {
       const resolved = mode === "system" ? getSystemTheme() : mode;
       setResolvedTheme(resolved);
@@ -58,11 +74,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       mediaQuery.addEventListener("change", handler);
       return () => mediaQuery.removeEventListener("change", handler);
     }
-  }, [mode]);
+  }, [mode, isHydrated]);
 
   const setMode = (newMode: ThemeMode) => {
     setModeState(newMode);
-    localStorage.setItem(STORAGE_KEY, newMode);
+    if (typeof window !== "undefined") {
+      localStorage.setItem(STORAGE_KEY, newMode);
+    }
   };
 
   return (
