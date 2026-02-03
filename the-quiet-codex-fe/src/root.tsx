@@ -9,14 +9,18 @@ import {
 import type { Route } from "./+types/root";
 import "./index.css";
 import { Provider } from "react-redux";
-import { store } from "./redux/store";
+import { getStore } from "./redux/store";
 import { AuthBootstrap } from "./features/auth";
 import { I18nProvider } from "./i18n";
 import { ThemeProvider } from "./theme";
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  // Get the store instance - this will create a new store on server
+  // and reuse the singleton on client
+  const store = getStore();
+
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <title>The Quiet Codex</title>
         <meta property="og:title" content="The Quiet Codex" />
@@ -31,7 +35,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <Provider store={store}>
           <ThemeProvider>
             <I18nProvider>
