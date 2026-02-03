@@ -46,7 +46,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           content="Your personal productivity companion."
         />
         <meta property="og:type" content="website" />
-        <link rel="icon" href="/vite.svg" />
+        <link rel="icon" href={`${import.meta.env.BASE_URL}vite.svg`} />
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
