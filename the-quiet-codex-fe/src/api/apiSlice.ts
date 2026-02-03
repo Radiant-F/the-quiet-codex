@@ -10,7 +10,7 @@ import type { TokenResponse } from "@/features/auth/auth";
 import { logout, setAccessToken } from "@/features/auth/services/authReducer";
 
 const rawBaseQuery = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_API_BASE_URL,
+  baseUrl: import.meta.env.VITE_API_BASE_URL || "/api",
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.accessToken;
