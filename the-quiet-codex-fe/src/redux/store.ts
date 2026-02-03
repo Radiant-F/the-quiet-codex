@@ -17,27 +17,27 @@ export function createStore() {
   });
 }
 
-// Create a singleton store for client-side only
-// This ensures the same store instance is used throughout the client app
-let clientStore: ReturnType<typeof createStore> | undefined;
+// For client-side, we use a singleton store
+// This is created lazily to avoid issues with SSR
+let _store: ReturnType<typeof createStore> | null = null;
 
-export function getStore() {
-  // Server: always create a new store to avoid sharing state between requests
+export function getClientStore() {
   if (typeof window === "undefined") {
+    // On server, always return a new store
     return createStore();
   }
 
-  // Client: reuse the same store instance
-  if (!clientStore) {
-    clientStore = createStore();
+  // On client, use singleton
+  if (!_store) {
+    _store = createStore();
   }
-  return clientStore;
+  return _store;
 }
 
-// For backwards compatibility, export a store getter
-// Components should use the store from context, but this helps with type inference
-export const store = typeof window === "undefined" ? createStore() : getStore();
+// Export the store getter for use in components
+export const getStore = getClientStore;
 
+// Type exports for hooks
 export type AppStore = ReturnType<typeof createStore>;
 export type RootState = ReturnType<AppStore["getState"]>;
 export type AppDispatch = AppStore["dispatch"];

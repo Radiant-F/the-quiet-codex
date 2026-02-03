@@ -8,6 +8,7 @@ import {
 } from "react-router";
 import type { Route } from "./+types/root";
 import "./index.css";
+import { useMemo } from "react";
 import { Provider } from "react-redux";
 import { getStore } from "./redux/store";
 import { AuthBootstrap } from "./features/auth";
@@ -15,9 +16,25 @@ import { I18nProvider } from "./i18n";
 import { ThemeProvider } from "./theme";
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  // Get the store instance - this will create a new store on server
-  // and reuse the singleton on client
-  const store = getStore();
+  // Memoize the store to ensure we get the same instance throughout the render
+  // On server: creates a new store for this request
+  // On client: returns the singleton store
+  const store = useMemo(() => getStore(), []);
+
+  // Inline script to set theme before hydration to prevent flash
+  // This runs synchronously before React hydrates
+  const themeScript = `
+    (function() {
+      try {
+        var stored = localStorage.getItem('theme-mode');
+        var theme = stored === 'light' || stored === 'dark' ? stored : 
+          (stored === 'system' || !stored) ? 
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : 
+            'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  `;
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -32,6 +49,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <link rel="icon" href="/vite.svg" />
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <Meta />
         <Links />
       </head>
