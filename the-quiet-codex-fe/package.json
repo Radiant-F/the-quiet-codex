@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:server": "bun build server/index.ts --outdir dist-server --target node --format esm",
+    "build:server": "npx esbuild server/index.ts --bundle --platform=node --format=esm --outdir=dist-server --packages=external",
     "build:all": "npm run build && npm run build:server",
     "start": "node dist-server/index.js",
     "lint": "eslint .",

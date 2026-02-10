@@ -46,7 +46,7 @@ app.get("/articles/:slug", async (req, res) => {
 });
 
 // All other routes → SPA fallback
-app.get("*", (_req, res) => {
+app.use((_req, res) => {
   res.setHeader("Content-Type", "text/html");
   res.send(indexHtml);
 });
