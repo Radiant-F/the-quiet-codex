@@ -1,5 +1,5 @@
 [deploy]
 startCommand = "node dist-server/index.js"
-healthcheckPath = "/"
+healthcheckPath = "/health"
 healthcheckTimeout = 300
 numReplicas = 1
