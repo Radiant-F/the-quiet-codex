@@ -1,160 +1,137 @@
-import { useState } from "react";
-import { Link } from "react-router";
-import { useI18n } from "@/i18n";
-import { useTheme } from "@/theme";
-import { useListPublishedArticlesQuery } from "@/features/article";
-import { ArticleCard } from "@/features/article/components/ArticleCard";
+import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
+import { FiFeather } from "react-icons/fi";
+import { motion } from "motion/react";
+import BlobSVG from "../../components/BlobSVG";
+import { PublicArticleList } from "../../features/article";
 import {
-  MdLightMode,
-  MdDarkMode,
-  MdLanguage,
-  MdArrowForward,
-  MdArrowBack,
-} from "react-icons/md";
+  SERIF,
+  SANS,
+  FOREST,
+  SAGE,
+  TERRACOTTA,
+  CREAM,
+  KEYFRAMES,
+} from "../../lib/theme";
 
 export default function ArticlesPage() {
-  const { t, locale, setLocale } = useI18n();
-  const { mode, setMode, resolvedTheme } = useTheme();
-  const [page, setPage] = useState(1);
-  const limit = 12;
-
-  const { data, isLoading, isFetching } = useListPublishedArticlesQuery({
-    page,
-    limit,
-  });
-
-  const toggleTheme = () => {
-    setMode(mode === "dark" ? "light" : mode === "light" ? "system" : "dark");
-  };
-
-  const toggleLanguage = () => {
-    setLocale(locale === "en" ? "id" : "en");
-  };
-
   return (
-    <div className="theme-page min-h-screen">
-      {/* Navigation */}
-      <nav className="glass-nav sticky top-0 z-50">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
-          <Link to="/" className="text-xl font-bold tracking-tight">
-            <span className="theme-accent">The Quiet</span>{" "}
-            <span className="theme-text">Codex</span>
-          </Link>
+    <div
+      className="min-h-screen overflow-hidden"
+      style={{ background: CREAM, color: FOREST, fontFamily: SANS }}
+    >
+      <Helmet>
+        <title>Articles — The Quiet Codex</title>
+        <meta
+          name="description"
+          content="Explore thoughtful articles from The Quiet Codex community."
+        />
+      </Helmet>
 
-          <div className="flex items-center gap-4">
-            <Link
-              to="/auth"
-              className="theme-muted hover:theme-text transition-colors"
-            >
-              {t("common", "login")}
-            </Link>
-            <button
-              onClick={toggleTheme}
-              className="theme-muted hover:theme-accent cursor-pointer transition-colors"
-              title={t("common", "switchTheme")}
-            >
-              {resolvedTheme === "dark" ? (
-                <MdLightMode className="h-5 w-5" />
-              ) : (
-                <MdDarkMode className="h-5 w-5" />
-              )}
-            </button>
-            <button
-              onClick={toggleLanguage}
-              className="theme-muted hover:theme-accent cursor-pointer transition-colors"
-              title={t("common", "switchLanguage")}
-            >
-              <MdLanguage className="h-5 w-5" />
-            </button>
+      <style>{KEYFRAMES}</style>
+
+      {/* Nav */}
+      <nav className="relative z-20 flex items-center justify-between px-8 py-6 md:px-16">
+        <Link to="/" className="flex items-center gap-3">
+          <div
+            className="flex h-10 w-10 items-center justify-center rounded-full text-white"
+            style={{ background: SAGE }}
+          >
+            <FiFeather size={18} />
           </div>
+          <div>
+            <span
+              className="text-xl font-semibold"
+              style={{ fontFamily: SERIF }}
+            >
+              The Quiet Codex
+            </span>
+            <p className="text-xs" style={{ color: `${FOREST}40` }}>
+              Where ideas take root
+            </p>
+          </div>
+        </Link>
+        <div className="flex items-center gap-4">
+          <Link
+            to="/"
+            className="hidden text-sm transition-colors md:block"
+            style={{ color: `${FOREST}50` }}
+          >
+            Home
+          </Link>
+          <Link
+            to="/auth"
+            className="rounded-full px-6 py-2.5 text-sm font-medium text-white transition-all hover:shadow-lg"
+            style={{ background: TERRACOTTA }}
+          >
+            Sign In
+          </Link>
         </div>
       </nav>
 
-      {/* Header */}
-      <header className="border-b border-[var(--page-border)] bg-[var(--page-surface)]">
-        <div className="mx-auto max-w-7xl px-4 py-12">
-          <h1 className="theme-text mb-4 text-4xl font-bold">
-            {t("article", "allArticles")}
-          </h1>
-          <p className="theme-muted max-w-2xl text-lg">
-            {locale === "en"
-              ? "Discover stories, ideas, and knowledge shared by our community of writers."
-              : "Temukan cerita, ide, dan pengetahuan yang dibagikan oleh komunitas penulis kami."}
-          </p>
-        </div>
-      </header>
-
-      {/* Content */}
-      <main className="mx-auto max-w-7xl px-4 py-12">
-        {isLoading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="h-12 w-12 animate-spin rounded-full border-4 border-[var(--page-accent)] border-t-transparent" />
-          </div>
-        ) : data?.articles && data.articles.length > 0 ? (
-          <>
-            {/* Articles Grid */}
-            <div className="mb-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {data.articles.map((article) => (
-                <ArticleCard key={article.id} article={article} />
-              ))}
-            </div>
-
-            {/* Pagination */}
-            {data.totalPages > 1 && (
-              <div className="flex items-center justify-center gap-4">
-                <button
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  disabled={page === 1 || isFetching}
-                  className="glass flex items-center gap-2 rounded-lg px-4 py-2 transition-all hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  <MdArrowBack className="h-5 w-5" />
-                  {locale === "en" ? "Previous" : "Sebelumnya"}
-                </button>
-
-                <span className="theme-muted">
-                  {locale === "en"
-                    ? `Page ${page} of ${data.totalPages}`
-                    : `Halaman ${page} dari ${data.totalPages}`}
-                </span>
-
-                <button
-                  onClick={() =>
-                    setPage((p) => Math.min(data.totalPages, p + 1))
-                  }
-                  disabled={page === data.totalPages || isFetching}
-                  className="glass flex items-center gap-2 rounded-lg px-4 py-2 transition-all hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {locale === "en" ? "Next" : "Selanjutnya"}
-                  <MdArrowForward className="h-5 w-5" />
-                </button>
-              </div>
-            )}
-          </>
-        ) : (
-          <div className="glass rounded-2xl py-20 text-center">
-            <span className="mb-4 block text-6xl">📝</span>
-            <h3 className="theme-text mb-2 text-xl font-semibold">
-              {t("article", "noArticles")}
-            </h3>
-            <p className="theme-muted mb-6">{t("article", "noArticlesDesc")}</p>
-            <Link
-              to="/auth"
-              className="glass-button inline-flex items-center gap-2 rounded-lg px-6 py-3 font-medium text-white"
+      {/* Hero */}
+      <section className="relative px-8 py-16 md:px-16 md:py-24">
+        <BlobSVG
+          className="float pointer-events-none absolute -right-40 -top-20 w-[600px]"
+          color={SAGE}
+          opacity={0.08}
+        />
+        <div className="relative z-10 mx-auto max-w-6xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <span
+              className="text-xs font-semibold uppercase tracking-[0.2em]"
+              style={{ color: SAGE }}
             >
-              {t("landing", "startWriting")}
-              <MdArrowForward className="h-5 w-5" />
-            </Link>
-          </div>
-        )}
-      </main>
+              The Garden
+            </span>
+            <h1
+              className="mt-4 text-4xl font-semibold md:text-6xl"
+              style={{ fontFamily: SERIF }}
+            >
+              Explore articles
+            </h1>
+            <p
+              className="mt-4 max-w-lg text-lg"
+              style={{ color: `${FOREST}60` }}
+            >
+              Stories, insights, and ideas cultivated by our community of
+              thoughtful writers.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Article grid */}
+      <section className="px-8 pb-24 md:px-16">
+        <div className="mx-auto max-w-6xl">
+          <PublicArticleList />
+        </div>
+      </section>
 
       {/* Footer */}
-      <footer className="border-t border-[var(--page-border)] py-8">
-        <div className="mx-auto max-w-7xl px-4 text-center">
-          <p className="theme-muted text-sm">
-            © {new Date().getFullYear()} The Quiet Codex.{" "}
-            {locale === "en" ? "All rights reserved." : "Hak cipta dilindungi."}
-          </p>
+      <footer
+        className="px-8 py-8 md:px-16"
+        style={{ borderTop: `1px solid ${FOREST}10` }}
+      >
+        <div
+          className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-sm md:flex-row"
+          style={{ color: `${FOREST}60` }}
+        >
+          <span style={{ fontFamily: SERIF }} className="text-base">
+            &copy; 2026 The Quiet Codex
+          </span>
+          <div className="flex items-center gap-6">
+            <Link to="/" className="transition-colors hover:opacity-80">
+              Home
+            </Link>
+            <Link to="/articles" className="transition-colors hover:opacity-80">
+              Articles
+            </Link>
+          </div>
         </div>
       </footer>
     </div>

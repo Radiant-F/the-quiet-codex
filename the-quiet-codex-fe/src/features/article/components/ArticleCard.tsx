@@ -1,116 +1,131 @@
-import { Link } from "react-router";
-import { useI18n } from "@/i18n";
-import type { ArticleListItem } from "../article.d";
-import { MdAccessTime, MdPerson } from "react-icons/md";
+import { Link } from "react-router-dom";
+import { FiEdit2, FiTrash2, FiClock, FiCheck } from "react-icons/fi";
+import type { ArticleListItem } from "../article.domain";
+import {
+  SERIF,
+  SANS,
+  FOREST,
+  SAGE,
+  TERRACOTTA,
+  colors,
+} from "../../../lib/theme";
 
 interface ArticleCardProps {
   article: ArticleListItem;
-  featured?: boolean;
+  onDelete: (id: string) => void;
 }
 
-export function ArticleCard({ article, featured = false }: ArticleCardProps) {
-  const { t } = useI18n();
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
-
-  // Estimate reading time (rough: 200 words per minute)
-  const estimateReadTime = () => {
-    const wordCount = article.metaDescription.split(/\s+/).length;
-    return Math.max(1, Math.ceil(wordCount / 50)); // Very rough estimate from description
-  };
+export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
+  const isPublished = article.publishedAt !== null;
+  const date = new Date(
+    article.publishedAt ?? article.createdAt,
+  ).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 
   return (
-    <Link
-      to={`/article/${article.slug}`}
-      className={`glass group block overflow-hidden rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl ${
-        featured ? "md:flex" : ""
-      }`}
+    <div
+      className="group relative overflow-hidden rounded-2xl border transition-all hover:shadow-lg"
+      style={{
+        borderColor: `${FOREST}10`,
+        background: "white",
+      }}
     >
-      {/* Banner Image */}
-      <div
-        className={`relative overflow-hidden bg-[var(--page-elevated)] ${
-          featured ? "md:w-1/2" : "aspect-video"
-        }`}
-      >
-        {article.bannerImageUrl ? (
+      {/* Banner */}
+      {article.bannerImageUrl ? (
+        <div className="h-40 overflow-hidden">
           <img
             src={article.bannerImageUrl}
-            alt={article.title}
-            className={`h-full w-full object-cover transition-transform duration-300 group-hover:scale-105 ${
-              featured ? "aspect-video md:aspect-auto md:h-full" : ""
-            }`}
-            loading="lazy"
+            alt=""
+            className="h-full w-full object-cover transition-transform group-hover:scale-105"
           />
-        ) : (
-          <div
-            className={`flex items-center justify-center bg-gradient-to-br from-[var(--page-accent)]/20 to-[var(--page-accent)]/5 ${
-              featured ? "aspect-video md:h-full" : "aspect-video"
-            }`}
+        </div>
+      ) : (
+        <div
+          className="flex h-40 items-center justify-center"
+          style={{
+            background: `linear-gradient(135deg, ${SAGE}15, ${TERRACOTTA}10)`,
+          }}
+        >
+          <span
+            className="text-3xl font-semibold opacity-20"
+            style={{ fontFamily: SERIF, color: FOREST }}
           >
-            <span className="text-4xl opacity-50">📝</span>
-          </div>
-        )}
-
-        {/* Draft Badge */}
-        {!article.publishedAt && (
-          <span className="absolute top-3 left-3 rounded-full bg-yellow-500/90 px-3 py-1 text-xs font-medium text-black">
-            {t("article", "draft")}
+            {article.title.charAt(0)}
           </span>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Content */}
-      <div className={`p-5 ${featured ? "md:w-1/2 md:p-6" : ""}`}>
+      <div className="p-5">
+        <div className="mb-2 flex items-center gap-2">
+          <span
+            className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium"
+            style={{
+              background: isPublished ? `${SAGE}15` : `${TERRACOTTA}15`,
+              color: isPublished ? SAGE : TERRACOTTA,
+            }}
+          >
+            {isPublished ? (
+              <>
+                <FiCheck size={10} /> Published
+              </>
+            ) : (
+              <>
+                <FiClock size={10} /> Draft
+              </>
+            )}
+          </span>
+          <span className="text-xs" style={{ color: `${FOREST}40` }}>
+            {date}
+          </span>
+        </div>
+
         <h3
-          className={`theme-text mb-2 font-bold transition-colors group-hover:text-[var(--page-accent)] ${
-            featured ? "text-xl md:text-2xl" : "text-lg"
-          }`}
+          className="mb-1 line-clamp-2 text-lg font-semibold"
+          style={{ fontFamily: SERIF, color: FOREST }}
         >
           {article.title}
         </h3>
 
-        <p className="theme-muted mb-4 line-clamp-2 text-sm">
-          {article.metaDescription}
-        </p>
+        {article.metaDescription && (
+          <p
+            className="line-clamp-2 text-sm leading-relaxed"
+            style={{ color: `${FOREST}60`, fontFamily: SANS }}
+          >
+            {article.metaDescription}
+          </p>
+        )}
 
-        {/* Meta Info */}
-        <div className="flex flex-wrap items-center gap-4 text-xs">
-          {/* Author */}
-          <div className="flex items-center gap-1.5">
-            {article.author.profilePictureUrl ? (
-              <img
-                src={article.author.profilePictureUrl}
-                alt={article.author.username}
-                className="h-5 w-5 rounded-full object-cover"
-              />
-            ) : (
-              <MdPerson className="h-4 w-4 text-[var(--page-muted)]" />
-            )}
-            <span className="theme-muted">{article.author.username}</span>
-          </div>
-
-          {/* Date */}
-          <div className="flex items-center gap-1 text-[var(--page-muted)]">
-            <MdAccessTime className="h-3.5 w-3.5" />
-            <span>
-              {article.publishedAt
-                ? formatDate(article.publishedAt)
-                : formatDate(article.createdAt)}
-            </span>
-          </div>
-
-          {/* Read Time */}
-          <span className="theme-muted">
-            {estimateReadTime()} {t("article", "minRead")}
-          </span>
+        {/* Actions */}
+        <div className="mt-4 flex items-center gap-2">
+          <Link
+            to={`/dashboard/articles/${article.id}`}
+            className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-medium transition-all"
+            style={{
+              background: `${FOREST}08`,
+              color: FOREST,
+            }}
+          >
+            <FiEdit2 size={12} />
+            Edit
+          </Link>
+          <button
+            type="button"
+            onClick={() => onDelete(article.id)}
+            className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-medium transition-all"
+            style={{
+              background: colors.dangerBg,
+              color: colors.danger,
+            }}
+          >
+            <FiTrash2 size={12} />
+            Delete
+          </button>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }

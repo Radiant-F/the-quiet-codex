@@ -1,10 +1,5 @@
-[build]
-builder = "nixpacks"
-buildCommand = "bun install && bun run build"
-
 [deploy]
-startCommand = "bun run start"
+startCommand = "node dist-server/index.js"
 healthcheckPath = "/"
 healthcheckTimeout = 300
-restartPolicyType = "on_failure"
-restartPolicyMaxRetries = 10
+numReplicas = 1
