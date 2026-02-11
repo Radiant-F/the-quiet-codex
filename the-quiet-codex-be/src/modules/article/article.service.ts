@@ -74,11 +74,6 @@ interface ArticleMeta {
   type: "article";
 }
 
-interface UploadBannerResult {
-  message: string;
-  bannerImageUrl: string;
-}
-
 // ============ Helpers ============
 
 /**
@@ -254,11 +249,12 @@ function toArticleListItem(article: ArticleWithAuthor): ArticleListItem {
 
 export const articleService = {
   /**
-   * Create a new article
+   * Create a new article with optional banner image
    */
   async createArticle(
     authorId: string,
     input: CreateArticleInput,
+    bannerFile?: File,
   ): Promise<ArticleResponse> {
     // Generate or validate slug
     let slug: string;
@@ -276,6 +272,41 @@ export const articleService = {
     // Sanitize HTML body
     const sanitizedBody = sanitizeHtml(input.body);
 
+    let bannerData = {};
+
+    // Handle initial banner upload if provided
+    if (bannerFile) {
+      // Validate file type
+      const allowedTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+        "image/avif",
+      ];
+      if (!allowedTypes.includes(bannerFile.type)) {
+        throw new ConflictError("Invalid file type for banner");
+      }
+
+      const maxSize = 1 * 1024 * 1024;
+      if (bannerFile.size > maxSize) {
+        throw new ConflictError("Banner file size too large");
+      }
+
+      const arrayBuffer = await bannerFile.arrayBuffer();
+      const uploadResult = await uploadRawImage(
+        arrayBuffer,
+        "the-quiet-codex/articles",
+        `article_${slug}_${String(Date.now())}`,
+      );
+
+      bannerData = {
+        bannerImageUrl: uploadResult.secureUrl,
+        bannerImagePublicId: uploadResult.publicId,
+      };
+    }
+
     // Create article
     const article = await articleRepository.create({
       authorId,
@@ -284,6 +315,7 @@ export const articleService = {
       metaDescription: input.metaDescription,
       body: sanitizedBody,
       publishedAt: input.publish ? new Date() : null,
+      ...bannerData,
     });
 
     // Fetch with author info
@@ -304,6 +336,8 @@ export const articleService = {
     articleId: string,
     userId: string,
     input: UpdateArticleInput,
+    bannerFile?: File,
+    removeBanner?: boolean,
   ): Promise<ArticleResponse> {
     const article = await articleRepository.findById(articleId);
     if (!article) {
@@ -318,19 +352,10 @@ export const articleService = {
     const updateData: Record<string, unknown> = {};
 
     // Handle title update
-    if (input.title !== undefined) {
-      updateData.title = input.title;
-    }
-
-    // Handle meta description update
-    if (input.metaDescription !== undefined) {
+    if (input.title !== undefined) updateData.title = input.title;
+    if (input.metaDescription !== undefined)
       updateData.metaDescription = input.metaDescription;
-    }
-
-    // Handle body update with sanitization
-    if (input.body !== undefined) {
-      updateData.body = sanitizeHtml(input.body);
-    }
+    if (input.body !== undefined) updateData.body = sanitizeHtml(input.body);
 
     // Handle slug update
     if (input.slug !== undefined && input.slug !== article.slug) {
@@ -345,6 +370,45 @@ export const articleService = {
       updateData.publishedAt = new Date();
     } else if (input.publish === false && article.publishedAt) {
       updateData.publishedAt = null;
+    }
+
+    // Handle Banner Image Updates
+    if (removeBanner && article.bannerImagePublicId) {
+      await deleteImage(article.bannerImagePublicId);
+      updateData.bannerImageUrl = null;
+      updateData.bannerImagePublicId = null;
+    }
+
+    if (bannerFile) {
+      // Validate file
+      const allowedTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+        "image/avif",
+      ];
+      if (!allowedTypes.includes(bannerFile.type))
+        throw new ConflictError("Invalid file type");
+      if (bannerFile.size > 1 * 1024 * 1024)
+        throw new ConflictError("File size too large");
+
+      // Delete old image if it exists and wasn't just removed
+      if (article.bannerImagePublicId && !removeBanner) {
+        await deleteImage(article.bannerImagePublicId);
+      }
+
+      // Upload new
+      const arrayBuffer = await bannerFile.arrayBuffer();
+      const uploadResult = await uploadRawImage(
+        arrayBuffer,
+        "the-quiet-codex/articles",
+        `article_${articleId}_${String(Date.now())}`,
+      );
+
+      updateData.bannerImageUrl = uploadResult.secureUrl;
+      updateData.bannerImagePublicId = uploadResult.publicId;
     }
 
     // Update if there are changes
@@ -382,103 +446,6 @@ export const articleService = {
     }
 
     await articleRepository.delete(articleId);
-  },
-
-  /**
-   * Upload banner image for an article (author only)
-   */
-  async uploadBanner(
-    articleId: string,
-    userId: string,
-    file: File,
-  ): Promise<UploadBannerResult> {
-    const article = await articleRepository.findById(articleId);
-    if (!article) {
-      throw new NotFoundError("Article not found");
-    }
-
-    // Check ownership
-    if (article.authorId !== userId) {
-      throw new ForbiddenError("You can only edit your own articles");
-    }
-
-    // Validate file type
-    const allowedTypes = [
-      "image/jpeg",
-      "image/jpg",
-      "image/png",
-      "image/gif",
-      "image/webp",
-      "image/avif",
-    ];
-    if (!allowedTypes.includes(file.type)) {
-      throw new ConflictError(
-        "Invalid file type. Allowed types: JPEG, PNG, GIF, WebP, AVIF",
-      );
-    }
-
-    // Validate file size (max 1MB for banners - frontend handles optimization)
-    const maxSize = 1 * 1024 * 1024;
-    if (file.size > maxSize) {
-      throw new ConflictError("File size too large. Maximum size is 1MB");
-    }
-
-    // Delete old banner if exists
-    if (article.bannerImagePublicId) {
-      await deleteImage(article.bannerImagePublicId);
-    }
-
-    // Upload to Cloudinary (no transformations - frontend handles optimization)
-    const arrayBuffer = await file.arrayBuffer();
-    const uploadResult = await uploadRawImage(
-      arrayBuffer,
-      "the-quiet-codex/articles",
-      `article_${articleId}_${String(Date.now())}`,
-    );
-
-    // Update article with new banner
-    await articleRepository.update(articleId, {
-      bannerImageUrl: uploadResult.secureUrl,
-      bannerImagePublicId: uploadResult.publicId,
-    });
-
-    return {
-      message: "Banner image uploaded successfully",
-      bannerImageUrl: uploadResult.secureUrl,
-    };
-  },
-
-  /**
-   * Delete banner image for an article (author only)
-   */
-  async deleteBanner(
-    articleId: string,
-    userId: string,
-  ): Promise<{ message: string }> {
-    const article = await articleRepository.findById(articleId);
-    if (!article) {
-      throw new NotFoundError("Article not found");
-    }
-
-    // Check ownership
-    if (article.authorId !== userId) {
-      throw new ForbiddenError("You can only edit your own articles");
-    }
-
-    if (!article.bannerImagePublicId) {
-      throw new NotFoundError("No banner image to delete");
-    }
-
-    // Delete from Cloudinary
-    await deleteImage(article.bannerImagePublicId);
-
-    // Update article
-    await articleRepository.update(articleId, {
-      bannerImageUrl: null,
-      bannerImagePublicId: null,
-    });
-
-    return { message: "Banner image deleted successfully" };
   },
 
   /**

@@ -98,74 +98,6 @@ export const articleMetaResponse = t.Object({
   type: t.Literal("article"),
 });
 
-// ============ Request Bodies ============
-
-export const createArticleBody = t.Object({
-  title: t.String({
-    minLength: 1,
-    maxLength: 200,
-    examples: ["My Awesome Article"],
-  }),
-  metaDescription: t.String({
-    minLength: 1,
-    maxLength: 320,
-    examples: ["A brief description of the article for SEO purposes."],
-  }),
-  body: t.String({
-    minLength: 1,
-    examples: [
-      "<p>This is the article content with <strong>HTML</strong>.</p>",
-    ],
-  }),
-  slug: t.Optional(
-    t.String({
-      minLength: 1,
-      maxLength: 200,
-      pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$",
-      examples: ["my-custom-slug"],
-    }),
-  ),
-  publish: t.Optional(t.Boolean({ examples: [true] })),
-});
-
-export const updateArticleBody = t.Object({
-  title: t.Optional(
-    t.String({
-      minLength: 1,
-      maxLength: 200,
-      examples: ["Updated Article Title"],
-    }),
-  ),
-  metaDescription: t.Optional(
-    t.String({
-      minLength: 1,
-      maxLength: 320,
-      examples: ["Updated description for SEO."],
-    }),
-  ),
-  body: t.Optional(
-    t.String({
-      minLength: 1,
-      examples: ["<p>Updated article content.</p>"],
-    }),
-  ),
-  slug: t.Optional(
-    t.String({
-      minLength: 1,
-      maxLength: 200,
-      pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$",
-      examples: ["updated-custom-slug"],
-    }),
-  ),
-  publish: t.Optional(
-    t.Boolean({
-      examples: [true],
-      description:
-        "true to publish, false to unpublish, omit to leave unchanged",
-    }),
-  ),
-});
-
 // ============ Query Parameters ============
 
 export const articleListQuery = t.Object({
@@ -174,13 +106,4 @@ export const articleListQuery = t.Object({
   authorId: t.Optional(
     t.String({ examples: ["550e8400-e29b-41d4-a716-446655440000"] }),
   ),
-});
-
-// ============ Upload Response ============
-
-export const uploadBannerResponse = t.Object({
-  message: t.String({ examples: ["Banner image uploaded successfully"] }),
-  bannerImageUrl: t.String({
-    examples: ["https://res.cloudinary.com/.../banner.jpg"],
-  }),
 });

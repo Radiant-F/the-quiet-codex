@@ -386,17 +386,16 @@ Create a new article.
 
 **Auth**: Bearer token
 
-**Request body**
+**Content-Type**: `multipart/form-data` (recommended if uploading banner) or `application/json`
 
-```json
-{
-  "title": "My Awesome Article",
-  "metaDescription": "A brief description of the article for SEO purposes.",
-  "body": "<p>This is the article content with <strong>HTML</strong>.</p>",
-  "slug": "my-custom-slug",
-  "publish": true
-}
-```
+**Form fields / Body**
+
+- `title`: string (required, 3-100 chars)
+- `metaDescription`: string (required, max 160 chars)
+- `body`: string (required, HTML content)
+- `slug`: string (optional, alphanumeric with hyphens)
+- `publish`: boolean (optional)
+- `banner`: file (optional, max 1MB, jpeg/png/gif/webp/avif)
 
 **Response 200**
 
@@ -426,17 +425,17 @@ Update an existing article.
 
 **Auth**: Bearer token
 
-**Request body**
+**Content-Type**: `multipart/form-data` (recommended if uploading/removing banner) or `application/json`
 
-```json
-{
-  "title": "Updated Article Title",
-  "metaDescription": "Updated description for SEO.",
-  "body": "<p>Updated article content.</p>",
-  "slug": "updated-custom-slug",
-  "publish": true
-}
-```
+**Form fields / Body**
+
+- `title`: string (optional, 3-100 chars)
+- `metaDescription`: string (optional, max 160 chars)
+- `body`: string (optional, HTML content)
+- `slug`: string (optional, alphanumeric with hyphens)
+- `publish`: boolean (optional)
+- `banner`: file (optional, max 1MB)
+- `removeBanner`: boolean (optional, true to remove existing banner)
 
 **Response 200**
 
@@ -456,47 +455,6 @@ Delete an article.
 
 ```json
 { "message": "Article deleted successfully" }
-```
-
-**Errors**: 401, 403, 404
-
----
-
-### POST /articles/:id/banner
-
-Upload a banner image for an article.
-
-**Auth**: Bearer token
-
-**Content-Type**: `multipart/form-data`
-
-**Form fields**
-
-- `file`: image file (jpeg, png, gif, webp, avif), max size 1MB
-
-**Response 200**
-
-```json
-{
-  "message": "Banner image uploaded successfully",
-  "bannerImageUrl": "https://res.cloudinary.com/.../banner.jpg"
-}
-```
-
-**Errors**: 400, 401, 403, 404
-
----
-
-### DELETE /articles/:id/banner
-
-Delete the banner image for an article.
-
-**Auth**: Bearer token
-
-**Response 200**
-
-```json
-{ "message": "Operation successful" }
 ```
 
 **Errors**: 401, 403, 404

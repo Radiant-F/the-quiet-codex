@@ -3,12 +3,9 @@ import {
   articleResponse,
   articleListResponse,
   articleMetaResponse,
-  createArticleBody,
-  updateArticleBody,
   articleListQuery,
   errorResponse,
   messageResponse,
-  uploadBannerResponse,
 } from "./article.schema";
 import { articleService } from "./article.service";
 import { authGuard } from "../auth/auth.guard";
@@ -144,7 +141,12 @@ const protectedArticleRoutes = new Elysia({ prefix: "/articles" })
     "/",
     async ({ user, body, set }) => {
       try {
-        return await articleService.createArticle(user.id, body);
+        const { banner, publish, ...rest } = body;
+        const articleData = {
+          ...rest,
+          publish: publish === true || publish === "true",
+        };
+        return await articleService.createArticle(user.id, articleData, banner);
       } catch (err) {
         if (err instanceof ConflictError) {
           set.status = 409;
@@ -154,7 +156,25 @@ const protectedArticleRoutes = new Elysia({ prefix: "/articles" })
       }
     },
     {
-      body: createArticleBody,
+      body: t.Object({
+        title: t.String({ minLength: 3, maxLength: 100 }),
+        metaDescription: t.String({ maxLength: 160 }),
+        body: t.String(),
+        slug: t.Optional(t.String({ pattern: "^[a-z0-9-]+$" })),
+        publish: t.Optional(t.Union([t.Boolean(), t.String()])),
+        banner: t.Optional(
+          t.File({
+            type: [
+              "image/jpeg",
+              "image/png",
+              "image/gif",
+              "image/webp",
+              "image/avif",
+            ],
+            maxSize: "1m",
+          }),
+        ),
+      }),
       response: {
         200: articleResponse,
         401: errorResponse,
@@ -164,7 +184,7 @@ const protectedArticleRoutes = new Elysia({ prefix: "/articles" })
       detail: {
         summary: "Create article",
         description:
-          "Creates a new article. The authenticated user becomes the author. Slug is auto-generated from title if not provided.",
+          "Creates a new article. Supports multipart/form-data for optional banner image upload.",
         tags: ["Articles"],
         security: [{ bearerAuth: [] }],
       },
@@ -207,7 +227,27 @@ const protectedArticleRoutes = new Elysia({ prefix: "/articles" })
     "/:id",
     async ({ params, user, body, set }) => {
       try {
-        return await articleService.updateArticle(params.id, user.id, body);
+        const { banner, removeBanner, publish, ...rest } = body;
+        const updateData = {
+          ...rest,
+          // Only update publish if provided, convert string "true"/"false" to boolean
+          publish:
+            publish === undefined
+              ? undefined
+              : publish === true || publish === "true",
+        };
+        const removeBannerBool =
+          removeBanner === undefined
+            ? undefined
+            : removeBanner === true || removeBanner === "true";
+
+        return await articleService.updateArticle(
+          params.id,
+          user.id,
+          updateData,
+          banner,
+          removeBannerBool,
+        );
       } catch (err) {
         if (err instanceof NotFoundError) {
           set.status = 404;
@@ -228,7 +268,26 @@ const protectedArticleRoutes = new Elysia({ prefix: "/articles" })
       params: t.Object({
         id: t.String({ examples: ["550e8400-e29b-41d4-a716-446655440000"] }),
       }),
-      body: updateArticleBody,
+      body: t.Object({
+        title: t.Optional(t.String({ minLength: 3, maxLength: 100 })),
+        metaDescription: t.Optional(t.String({ maxLength: 160 })),
+        body: t.Optional(t.String()),
+        slug: t.Optional(t.String({ pattern: "^[a-z0-9-]+$" })),
+        publish: t.Optional(t.Union([t.Boolean(), t.String()])),
+        banner: t.Optional(
+          t.File({
+            type: [
+              "image/jpeg",
+              "image/png",
+              "image/gif",
+              "image/webp",
+              "image/avif",
+            ],
+            maxSize: "1m",
+          }),
+        ),
+        removeBanner: t.Optional(t.Union([t.Boolean(), t.String()])),
+      }),
       response: {
         200: articleResponse,
         401: errorResponse,
@@ -240,7 +299,7 @@ const protectedArticleRoutes = new Elysia({ prefix: "/articles" })
       detail: {
         summary: "Update article",
         description:
-          "Updates an article. Only the author can update their own articles.",
+          "Updates an article and optionally updates/removes the banner image using separate fields.",
         tags: ["Articles"],
         security: [{ bearerAuth: [] }],
       },
@@ -283,100 +342,7 @@ const protectedArticleRoutes = new Elysia({ prefix: "/articles" })
         security: [{ bearerAuth: [] }],
       },
     },
-  )
-  // Upload banner image
-  .post(
-    "/:id/banner",
-    async ({ params, user, body, set }) => {
-      try {
-        const { file } = body;
-        return await articleService.uploadBanner(params.id, user.id, file);
-      } catch (err) {
-        if (err instanceof NotFoundError) {
-          set.status = 404;
-          return { message: err.message };
-        }
-        if (err instanceof ForbiddenError) {
-          set.status = 403;
-          return { message: err.message };
-        }
-        if (err instanceof ConflictError) {
-          set.status = 400;
-          return { message: err.message };
-        }
-        throw err;
-      }
-    },
-    {
-      params: t.Object({
-        id: t.String({ examples: ["550e8400-e29b-41d4-a716-446655440000"] }),
-      }),
-      body: t.Object({
-        file: t.File({
-          type: [
-            "image/jpeg",
-            "image/png",
-            "image/gif",
-            "image/webp",
-            "image/avif",
-          ],
-          maxSize: "1m",
-        }),
-      }),
-      response: {
-        200: uploadBannerResponse,
-        400: errorResponse,
-        401: errorResponse,
-        403: errorResponse,
-        404: errorResponse,
-      },
-      detail: {
-        summary: "Upload banner image",
-        description:
-          "Uploads a banner image for an article. Maximum file size is 1MB. Only the author can upload.",
-        tags: ["Articles"],
-        security: [{ bearerAuth: [] }],
-      },
-    },
-  )
-  // Delete banner image
-  .delete(
-    "/:id/banner",
-    async ({ params, user, set }) => {
-      try {
-        return await articleService.deleteBanner(params.id, user.id);
-      } catch (err) {
-        if (err instanceof NotFoundError) {
-          set.status = 404;
-          return { message: err.message };
-        }
-        if (err instanceof ForbiddenError) {
-          set.status = 403;
-          return { message: err.message };
-        }
-        throw err;
-      }
-    },
-    {
-      params: t.Object({
-        id: t.String({ examples: ["550e8400-e29b-41d4-a716-446655440000"] }),
-      }),
-      response: {
-        200: messageResponse,
-        401: errorResponse,
-        403: errorResponse,
-        404: errorResponse,
-      },
-      detail: {
-        summary: "Delete banner image",
-        description:
-          "Deletes the banner image for an article. Only the author can delete.",
-        tags: ["Articles"],
-        security: [{ bearerAuth: [] }],
-      },
-    },
   );
-
 // ============ Exports ============
 
 // Export routes separately to prevent authGuard from bleeding into public routes
