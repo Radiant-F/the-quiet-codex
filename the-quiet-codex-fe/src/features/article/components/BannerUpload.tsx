@@ -5,53 +5,44 @@ import {
   validateImageFile,
   MAX_BANNER_SIZE,
 } from "../../../lib/file-validation";
-import {
-  useUploadBannerMutation,
-  useDeleteBannerMutation,
-} from "../services/article.api";
 
 interface BannerUploadProps {
-  articleId: string;
   currentBannerUrl: string | null;
+  onFileChange: (file: File | null) => void;
+  onRemoveChange: (remove: boolean) => void;
+  disabled?: boolean;
 }
 
 export default function BannerUpload({
-  articleId,
   currentBannerUrl,
+  onFileChange,
+  onRemoveChange,
+  disabled = false,
 }: BannerUploadProps) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(currentBannerUrl);
-  const [uploadBanner, uploadState] = useUploadBannerMutation();
-  const [deleteBanner, deleteState] = useDeleteBannerMutation();
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleFile = async (file: File) => {
+  const handleFile = (file: File) => {
     setError(null);
     const validation = validateImageFile(file, MAX_BANNER_SIZE);
     if (!validation.valid) {
       setError(validation.error);
       return;
     }
+
     const objectUrl = URL.createObjectURL(file);
     setPreview(objectUrl);
-    try {
-      const result = await uploadBanner({ id: articleId, file }).unwrap();
-      setPreview(result.bannerImageUrl);
-    } catch {
-      setPreview(currentBannerUrl);
-      setError("Failed to upload banner image.");
-    }
+    onFileChange(file);
+    onRemoveChange(false);
   };
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     setError(null);
-    try {
-      await deleteBanner(articleId).unwrap();
-      setPreview(null);
-    } catch {
-      setError("Failed to delete banner image.");
-    }
+    setPreview(null);
+    onFileChange(null);
+    onRemoveChange(true);
   };
 
   const onDrop = (e: React.DragEvent) => {
@@ -67,8 +58,7 @@ export default function BannerUpload({
   };
 
   const onDragLeave = () => setIsDragging(false);
-
-  const isLoading = uploadState.isLoading || deleteState.isLoading;
+  const isLoading = disabled;
 
   return (
     <div className="space-y-3">

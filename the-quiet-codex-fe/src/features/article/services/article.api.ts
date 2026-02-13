@@ -3,7 +3,6 @@ import type {
   Article,
   ArticleListParams,
   ArticleMeta,
-  BannerUploadResponse,
   CreateArticleRequest,
   MessageResponse,
   MyArticleListParams,
@@ -11,6 +10,50 @@ import type {
   UpdateArticleRequest,
 } from "../article.domain";
 import { getRtkQueryErrorInfo } from "../../../api/rtk-query-error";
+
+function appendIfDefined(formData: FormData, key: string, value: unknown) {
+  if (value === undefined || value === null) {
+    return;
+  }
+
+  if (typeof value === "boolean") {
+    formData.append(key, String(value));
+    return;
+  }
+
+  if (value instanceof File) {
+    formData.append(key, value);
+    return;
+  }
+
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (trimmed.length > 0) {
+      formData.append(key, trimmed);
+    }
+    return;
+  }
+
+  formData.append(key, String(value));
+}
+
+function toArticleFormData(
+  payload: CreateArticleRequest | UpdateArticleRequest,
+): FormData {
+  const formData = new FormData();
+  appendIfDefined(formData, "title", payload.title);
+  appendIfDefined(formData, "metaDescription", payload.metaDescription);
+  appendIfDefined(formData, "body", payload.body);
+  appendIfDefined(formData, "slug", payload.slug);
+  appendIfDefined(formData, "publish", payload.publish);
+  appendIfDefined(formData, "banner", payload.banner);
+
+  if ("removeBanner" in payload) {
+    appendIfDefined(formData, "removeBanner", payload.removeBanner);
+  }
+
+  return formData;
+}
 
 const logQueryError = (error: unknown) => {
   const errorInfo = getRtkQueryErrorInfo(error);
@@ -122,7 +165,7 @@ export const articleApiSlice = apiSlice.injectEndpoints({
       query: (body) => ({
         url: "/articles",
         method: "POST",
-        body,
+        body: toArticleFormData(body),
       }),
       invalidatesTags: ["MyArticleList", "ArticleList"],
       onQueryStarted: async (_args, { queryFulfilled }) => {
@@ -155,7 +198,7 @@ export const articleApiSlice = apiSlice.injectEndpoints({
       query: ({ id, data }) => ({
         url: `/articles/${id}`,
         method: "PUT",
-        body: data,
+        body: toArticleFormData(data),
       }),
       invalidatesTags: (_result, _error, { id }) => [
         { type: "Article", id },
@@ -187,52 +230,6 @@ export const articleApiSlice = apiSlice.injectEndpoints({
         }
       },
     }),
-
-    uploadBanner: builder.mutation<
-      BannerUploadResponse,
-      { id: string; file: File }
-    >({
-      query: ({ id, file }) => {
-        const formData = new FormData();
-        formData.append("file", file);
-        return {
-          url: `/articles/${id}/banner`,
-          method: "POST",
-          body: formData,
-        };
-      },
-      invalidatesTags: (_result, _error, { id }) => [
-        { type: "Article", id },
-        "MyArticleList",
-      ],
-      onQueryStarted: async (_args, { queryFulfilled }) => {
-        try {
-          const { data } = await queryFulfilled;
-          console.log("RESPONSE SUCCESS:", data);
-        } catch (error) {
-          logQueryError(error);
-        }
-      },
-    }),
-
-    deleteBanner: builder.mutation<MessageResponse, string>({
-      query: (id) => ({
-        url: `/articles/${id}/banner`,
-        method: "DELETE",
-      }),
-      invalidatesTags: (_result, _error, id) => [
-        { type: "Article", id },
-        "MyArticleList",
-      ],
-      onQueryStarted: async (_args, { queryFulfilled }) => {
-        try {
-          const { data } = await queryFulfilled;
-          console.log("RESPONSE SUCCESS:", data);
-        } catch (error) {
-          logQueryError(error);
-        }
-      },
-    }),
   }),
 });
 
@@ -245,6 +242,4 @@ export const {
   useGetArticleByIdQuery,
   useUpdateArticleMutation,
   useDeleteArticleMutation,
-  useUploadBannerMutation,
-  useDeleteBannerMutation,
 } = articleApiSlice;

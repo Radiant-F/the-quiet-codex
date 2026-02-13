@@ -42,6 +42,7 @@ export interface CreateArticleRequest {
   body: string;
   slug?: string;
   publish?: boolean;
+  banner?: File;
 }
 
 export interface UpdateArticleRequest {
@@ -50,6 +51,8 @@ export interface UpdateArticleRequest {
   body?: string;
   slug?: string;
   publish?: boolean;
+  banner?: File;
+  removeBanner?: boolean;
 }
 
 export interface ArticleListParams {
@@ -71,11 +74,6 @@ export interface ArticleMeta {
   author: string;
   publishedAt: string;
   type: string;
-}
-
-export interface BannerUploadResponse {
-  message: string;
-  bannerImageUrl: string;
 }
 
 export interface MessageResponse {

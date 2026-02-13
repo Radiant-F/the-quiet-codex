@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { FiSave, FiSend, FiArrowLeft } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import type { Article, CreateArticleRequest } from "../article.domain";
+import type { Article } from "../article.domain";
 import {
   useCreateArticleMutation,
   useUpdateArticleMutation,
@@ -31,6 +31,8 @@ export default function ArticleForm({ mode, initialData }: ArticleFormProps) {
   const [updateArticle, updateState] = useUpdateArticleMutation();
   const [autoSlug, setAutoSlug] = useState(mode === "create");
   const [serverError, setServerError] = useState<string | null>(null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+  const [removeBanner, setRemoveBanner] = useState(false);
 
   const { register, handleSubmit, control, watch, setValue, formState } =
     useForm<FormValues>({
@@ -60,10 +62,11 @@ export default function ArticleForm({ mode, initialData }: ArticleFormProps) {
     setServerError(null);
     try {
       if (mode === "create") {
-        const payload: CreateArticleRequest = {
+        const payload = {
           title: values.title,
           body: values.body,
           publish: values.publish,
+          ...(bannerFile && { banner: bannerFile }),
           ...(values.slug && { slug: values.slug }),
           ...(values.metaDescription && {
             metaDescription: values.metaDescription,
@@ -80,6 +83,8 @@ export default function ArticleForm({ mode, initialData }: ArticleFormProps) {
             slug: values.slug,
             metaDescription: values.metaDescription,
             publish: values.publish,
+            ...(bannerFile && { banner: bannerFile }),
+            removeBanner,
           },
         }).unwrap();
       }
@@ -105,13 +110,12 @@ export default function ArticleForm({ mode, initialData }: ArticleFormProps) {
         Back to articles
       </button>
 
-      {/* Banner (only in edit mode) */}
-      {mode === "edit" && initialData && (
-        <BannerUpload
-          articleId={initialData.id}
-          currentBannerUrl={initialData.bannerImageUrl}
-        />
-      )}
+      <BannerUpload
+        currentBannerUrl={initialData?.bannerImageUrl ?? null}
+        onFileChange={setBannerFile}
+        onRemoveChange={setRemoveBanner}
+        disabled={isLoading}
+      />
 
       {/* Title */}
       <div className="space-y-2">
