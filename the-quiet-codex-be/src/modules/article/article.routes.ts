@@ -11,6 +11,80 @@ import { articleService } from "./article.service";
 import { authGuard } from "../auth/auth.guard";
 import { NotFoundError, ConflictError, ForbiddenError } from "../../lib/errors";
 
+function normalizeFieldName(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+}
+
+function getNormalizedField(
+  payload: Record<string, unknown>,
+  field: string,
+): unknown {
+  if (payload[field] !== undefined) {
+    return payload[field];
+  }
+
+  const target = normalizeFieldName(field);
+  for (const [key, value] of Object.entries(payload)) {
+    if (normalizeFieldName(key) === target) {
+      return value;
+    }
+  }
+
+  return undefined;
+}
+
+function hasNormalizedField(
+  payload: Record<string, unknown>,
+  field: string,
+): boolean {
+  if (payload[field] !== undefined) {
+    return true;
+  }
+
+  const target = normalizeFieldName(field);
+  return Object.keys(payload).some((key) => normalizeFieldName(key) === target);
+}
+
+function parseBooleanField(value: unknown): boolean | undefined {
+  if (value === undefined || value === null || value === "") {
+    return undefined;
+  }
+
+  if (typeof value === "boolean") {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    return parseBooleanField(value[0]);
+  }
+
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    const unquoted =
+      (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+      (trimmed.startsWith("'") && trimmed.endsWith("'"))
+        ? trimmed.slice(1, -1)
+        : trimmed;
+    const normalized = unquoted.toLowerCase();
+
+    if (normalized === "true" || normalized === "false") {
+      return normalized === "true";
+    }
+
+    if (["true", "1", "yes", "on"].includes(normalized)) {
+      return true;
+    }
+    if (["false", "0", "no", "off"].includes(normalized)) {
+      return false;
+    }
+  }
+
+  return undefined;
+}
+
 // ============ Public Routes (No Auth Required) ============
 
 const publicArticleRoutes = new Elysia({ prefix: "/articles" })
@@ -141,10 +215,21 @@ const protectedArticleRoutes = new Elysia({ prefix: "/articles" })
     "/",
     async ({ user, body, set }) => {
       try {
-        const { banner, publish, ...rest } = body;
+        const payload = body as Record<string, unknown>;
+        const banner = getNormalizedField(payload, "banner") as
+          | File
+          | undefined;
+        const publish = getNormalizedField(payload, "publish");
+        const hasPublish = hasNormalizedField(payload, "publish");
+        const parsedPublish = parseBooleanField(publish);
+        const finalPublish = parsedPublish ?? (hasPublish ? true : false);
+
         const articleData = {
-          ...rest,
-          publish: publish === true || publish === "true",
+          title: payload.title as string,
+          metaDescription: payload.metaDescription as string,
+          body: payload.body as string,
+          slug: payload.slug as string | undefined,
+          publish: finalPublish,
         };
         return await articleService.createArticle(user.id, articleData, banner);
       } catch (err) {
@@ -161,7 +246,7 @@ const protectedArticleRoutes = new Elysia({ prefix: "/articles" })
         metaDescription: t.String({ maxLength: 160 }),
         body: t.String(),
         slug: t.Optional(t.String({ pattern: "^[a-z0-9-]+$" })),
-        publish: t.Optional(t.Union([t.Boolean(), t.String()])),
+        publish: t.Optional(t.Any()),
         banner: t.Optional(
           t.File({
             type: [
@@ -227,19 +312,21 @@ const protectedArticleRoutes = new Elysia({ prefix: "/articles" })
     "/:id",
     async ({ params, user, body, set }) => {
       try {
-        const { banner, removeBanner, publish, ...rest } = body;
+        const payload = body as Record<string, unknown>;
+        const banner = getNormalizedField(payload, "banner") as
+          | File
+          | undefined;
+        const publish = getNormalizedField(payload, "publish");
+        const removeBanner = getNormalizedField(payload, "removeBanner");
         const updateData = {
-          ...rest,
+          title: payload.title as string | undefined,
+          metaDescription: payload.metaDescription as string | undefined,
+          body: payload.body as string | undefined,
+          slug: payload.slug as string | undefined,
           // Only update publish if provided, convert string "true"/"false" to boolean
-          publish:
-            publish === undefined
-              ? undefined
-              : publish === true || publish === "true",
+          publish: parseBooleanField(publish),
         };
-        const removeBannerBool =
-          removeBanner === undefined
-            ? undefined
-            : removeBanner === true || removeBanner === "true";
+        const removeBannerBool = parseBooleanField(removeBanner);
 
         return await articleService.updateArticle(
           params.id,
@@ -273,7 +360,7 @@ const protectedArticleRoutes = new Elysia({ prefix: "/articles" })
         metaDescription: t.Optional(t.String({ maxLength: 160 })),
         body: t.Optional(t.String()),
         slug: t.Optional(t.String({ pattern: "^[a-z0-9-]+$" })),
-        publish: t.Optional(t.Union([t.Boolean(), t.String()])),
+        publish: t.Optional(t.Any()),
         banner: t.Optional(
           t.File({
             type: [
@@ -286,7 +373,7 @@ const protectedArticleRoutes = new Elysia({ prefix: "/articles" })
             maxSize: "1m",
           }),
         ),
-        removeBanner: t.Optional(t.Union([t.Boolean(), t.String()])),
+        removeBanner: t.Optional(t.Any()),
       }),
       response: {
         200: articleResponse,

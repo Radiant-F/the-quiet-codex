@@ -394,7 +394,7 @@ Create a new article.
 - `metaDescription`: string (required, max 160 chars)
 - `body`: string (required, HTML content)
 - `slug`: string (optional, alphanumeric with hyphens)
-- `publish`: boolean (optional)
+- `publish`: boolean-like value (optional, accepts `true/false`, `1/0`, `yes/no`, `on/off`)
 - `banner`: file (optional, max 1MB, jpeg/png/gif/webp/avif)
 
 **Response 200**
@@ -433,9 +433,9 @@ Update an existing article.
 - `metaDescription`: string (optional, max 160 chars)
 - `body`: string (optional, HTML content)
 - `slug`: string (optional, alphanumeric with hyphens)
-- `publish`: boolean (optional)
+- `publish`: boolean-like value (optional, accepts `true/false`, `1/0`, `yes/no`, `on/off`)
 - `banner`: file (optional, max 1MB)
-- `removeBanner`: boolean (optional, true to remove existing banner)
+- `removeBanner`: boolean-like value (optional, true-like value removes existing banner)
 
 **Response 200**
 

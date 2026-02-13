@@ -13,7 +13,7 @@ interface CreateArticleInput {
   metaDescription: string;
   body: string;
   slug?: string;
-  publish?: boolean;
+  publish?: boolean | string | number;
 }
 
 interface UpdateArticleInput {
@@ -21,7 +21,7 @@ interface UpdateArticleInput {
   metaDescription?: string;
   body?: string;
   slug?: string;
-  publish?: boolean;
+  publish?: boolean | string | number;
 }
 
 interface ArticleResponse {
@@ -211,6 +211,37 @@ function sanitizeHtml(html: string): string {
   });
 }
 
+function normalizePublishFlag(value: unknown): boolean | undefined {
+  if (value === undefined || value === null || value === "") {
+    return undefined;
+  }
+
+  if (typeof value === "boolean") {
+    return value;
+  }
+
+  if (typeof value === "number") {
+    if (value === 1) return true;
+    if (value === 0) return false;
+    return undefined;
+  }
+
+  if (typeof value === "string") {
+    const normalized = value
+      .trim()
+      .replace(/^['"]|['"]$/g, "")
+      .toLowerCase();
+    if (["true", "1", "yes", "on"].includes(normalized)) {
+      return true;
+    }
+    if (["false", "0", "no", "off"].includes(normalized)) {
+      return false;
+    }
+  }
+
+  return undefined;
+}
+
 /**
  * Transform database article to API response format
  */
@@ -256,6 +287,8 @@ export const articleService = {
     input: CreateArticleInput,
     bannerFile?: File,
   ): Promise<ArticleResponse> {
+    const publish = normalizePublishFlag(input.publish) ?? false;
+
     // Generate or validate slug
     let slug: string;
     if (input.slug) {
@@ -314,7 +347,7 @@ export const articleService = {
       title: input.title,
       metaDescription: input.metaDescription,
       body: sanitizedBody,
-      publishedAt: input.publish ? new Date() : null,
+      publishedAt: publish ? new Date() : null,
       ...bannerData,
     });
 
@@ -339,6 +372,8 @@ export const articleService = {
     bannerFile?: File,
     removeBanner?: boolean,
   ): Promise<ArticleResponse> {
+    const publish = normalizePublishFlag(input.publish);
+
     const article = await articleRepository.findById(articleId);
     if (!article) {
       throw new NotFoundError("Article not found");
@@ -366,9 +401,9 @@ export const articleService = {
     }
 
     // Handle publish state change
-    if (input.publish === true && !article.publishedAt) {
+    if (publish === true && !article.publishedAt) {
       updateData.publishedAt = new Date();
-    } else if (input.publish === false && article.publishedAt) {
+    } else if (publish === false && article.publishedAt) {
       updateData.publishedAt = null;
     }
 

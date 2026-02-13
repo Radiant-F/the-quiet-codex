@@ -178,6 +178,28 @@ describe("Article Module", () => {
       const data = (await response.json()) as { publishedAt: string | null };
       expect(data.publishedAt).toBeNull();
     });
+
+    it("should publish article when multipart publish value is 'on'", async () => {
+      const formData = new FormData();
+      formData.append("title", "Multipart Published Article");
+      formData.append("metaDescription", "Multipart publish parsing test");
+      formData.append("body", "<p>Multipart body</p>");
+      formData.append("publish", "on");
+
+      const response = await app.handle(
+        new Request("http://localhost/articles", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: formData,
+        }),
+      );
+
+      expect(response.status).toBe(200);
+      const data = (await response.json()) as { publishedAt: string | null };
+      expect(data.publishedAt).not.toBeNull();
+    });
   });
 
   describe("GET /articles - List Published Articles", () => {
