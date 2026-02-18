@@ -1,11 +1,2 @@
 export * from "./article.domain";
 export * from "./services/article.api";
-export { default as ArticleEditor } from "./components/ArticleEditor";
-export { default as ArticleForm } from "./components/ArticleForm";
-export { default as ArticleCard } from "./components/ArticleCard";
-export { default as ArticleListView } from "./components/ArticleListView";
-export { default as ArticleContent } from "./components/ArticleContent";
-export { default as BannerUpload } from "./components/BannerUpload";
-export { default as PublicArticleCard } from "./components/PublicArticleCard";
-export { default as PublicArticleList } from "./components/PublicArticleList";
-export { default as DeleteArticleDialog } from "./components/DeleteArticleDialog";
