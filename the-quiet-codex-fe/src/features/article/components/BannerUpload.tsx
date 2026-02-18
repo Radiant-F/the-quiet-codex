@@ -1,6 +1,17 @@
 import { useRef, useState } from "react";
 import { FiUploadCloud, FiTrash2, FiImage } from "react-icons/fi";
-import { SAGE, TERRACOTTA, FOREST, CREAM, colors } from "../../../lib/theme";
+import {
+  AURORA_2,
+  TEXT_PRIMARY,
+  TEXT_MUTED,
+  TEXT_DIM,
+  GLASS,
+  GLASS_BORDER,
+  GLASS_HOVER,
+  GRADIENT_PRIMARY,
+  SANS,
+  colors,
+} from "../../../lib/theme";
 import {
   validateImageFile,
   MAX_BANNER_SIZE,
@@ -64,7 +75,7 @@ export default function BannerUpload({
     <div className="space-y-3">
       <label
         className="text-sm font-medium"
-        style={{ color: FOREST, fontFamily: "'DM Sans', sans-serif" }}
+        style={{ color: TEXT_PRIMARY, fontFamily: SANS }}
       >
         Banner Image
       </label>
@@ -81,8 +92,8 @@ export default function BannerUpload({
               type="button"
               onClick={() => fileRef.current?.click()}
               disabled={isLoading}
-              className="rounded-full px-4 py-2 text-sm font-medium text-white transition-all"
-              style={{ background: SAGE }}
+              className="rounded-lg px-4 py-2 text-sm font-medium text-white transition-all"
+              style={{ background: GRADIENT_PRIMARY }}
             >
               <FiUploadCloud className="inline mr-1" size={14} />
               Replace
@@ -91,7 +102,7 @@ export default function BannerUpload({
               type="button"
               onClick={handleDelete}
               disabled={isLoading}
-              className="rounded-full px-4 py-2 text-sm font-medium text-white transition-all"
+              className="rounded-lg px-4 py-2 text-sm font-medium text-white transition-all"
               style={{ background: colors.danger }}
             >
               <FiTrash2 className="inline mr-1" size={14} />
@@ -110,18 +121,18 @@ export default function BannerUpload({
           onDragLeave={onDragLeave}
           className="flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed py-12 transition-all"
           style={{
-            borderColor: isDragging ? SAGE : `${FOREST}20`,
-            background: isDragging ? `${SAGE}08` : CREAM,
+            borderColor: isDragging ? AURORA_2 : GLASS_BORDER,
+            background: isDragging ? "rgba(0,212,170,0.05)" : GLASS,
           }}
         >
-          <FiImage size={32} style={{ color: `${FOREST}30` }} />
-          <p className="text-sm" style={{ color: `${FOREST}60` }}>
+          <FiImage size={32} style={{ color: TEXT_DIM }} />
+          <p className="text-sm" style={{ color: TEXT_MUTED }}>
             Drag & drop or{" "}
-            <span className="font-medium" style={{ color: TERRACOTTA }}>
+            <span className="font-medium" style={{ color: AURORA_2 }}>
               click to upload
             </span>
           </p>
-          <p className="text-xs" style={{ color: `${FOREST}40` }}>
+          <p className="text-xs" style={{ color: TEXT_DIM }}>
             JPEG, PNG, GIF, WebP, AVIF — max 1 MB
           </p>
         </div>

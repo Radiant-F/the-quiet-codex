@@ -1,6 +1,14 @@
 import { FiCalendar } from "react-icons/fi";
 import type { UserProfile } from "../auth.domain";
-import { SERIF, SANS, FOREST, SAGE } from "../../../lib/theme";
+import {
+  DISPLAY,
+  SANS,
+  TEXT_PRIMARY,
+  TEXT_DIM,
+  GLASS,
+  GLASS_BORDER,
+  GRADIENT_PRIMARY,
+} from "../../../lib/theme";
 
 interface ProfileCardProps {
   profile: UserProfile;
@@ -16,8 +24,8 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
     <div
       className="flex items-center gap-6 rounded-2xl border p-6"
       style={{
-        borderColor: `${FOREST}10`,
-        background: "white",
+        borderColor: GLASS_BORDER,
+        background: GLASS,
       }}
     >
       {/* Avatar */}
@@ -29,8 +37,8 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
         />
       ) : (
         <div
-          className="flex h-20 w-20 items-center justify-center rounded-full text-2xl font-semibold text-white"
-          style={{ background: SAGE }}
+          className="flex h-20 w-20 items-center justify-center rounded-xl text-2xl font-semibold text-white"
+          style={{ background: GRADIENT_PRIMARY }}
         >
           {profile.username.charAt(0).toUpperCase()}
         </div>
@@ -39,13 +47,13 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
       <div>
         <h2
           className="text-2xl font-semibold"
-          style={{ fontFamily: SERIF, color: FOREST }}
+          style={{ fontFamily: DISPLAY, color: TEXT_PRIMARY }}
         >
           {profile.username}
         </h2>
         <p
           className="mt-1 flex items-center gap-1.5 text-sm"
-          style={{ color: `${FOREST}50`, fontFamily: SANS }}
+          style={{ color: TEXT_DIM, fontFamily: SANS }}
         >
           <FiCalendar size={13} />
           Member since {memberSince}

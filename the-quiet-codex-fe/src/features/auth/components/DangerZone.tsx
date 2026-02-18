@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiAlertTriangle, FiTrash2 } from "react-icons/fi";
 import { useDeleteMeMutation } from "../services/auth.api";
-import { FOREST, colors } from "../../../lib/theme";
+import { TEXT_MUTED, GLASS_BORDER, colors } from "../../../lib/theme";
 
 export default function DangerZone() {
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ export default function DangerZone() {
         </h3>
       </div>
 
-      <p className="mb-4 text-sm" style={{ color: `${FOREST}70` }}>
+      <p className="mb-4 text-sm" style={{ color: TEXT_MUTED }}>
         Permanently delete your account and all of your articles. This action is
         irreversible.
       </p>
@@ -45,7 +45,7 @@ export default function DangerZone() {
         <button
           type="button"
           onClick={() => setShowConfirm(true)}
-          className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium text-white transition-all"
+          className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium text-white transition-all"
           style={{ background: colors.danger }}
         >
           <FiTrash2 size={14} />
@@ -61,7 +61,7 @@ export default function DangerZone() {
               type="button"
               onClick={handleDelete}
               disabled={deleteState.isLoading}
-              className="rounded-full px-5 py-2 text-sm font-medium text-white transition-all disabled:opacity-60"
+              className="rounded-lg px-5 py-2 text-sm font-medium text-white transition-all disabled:opacity-60"
               style={{ background: colors.danger }}
             >
               {deleteState.isLoading ? "Deleting..." : "Yes, delete my account"}
@@ -69,10 +69,10 @@ export default function DangerZone() {
             <button
               type="button"
               onClick={() => setShowConfirm(false)}
-              className="rounded-full border px-5 py-2 text-sm font-medium transition-all"
+              className="rounded-lg border px-5 py-2 text-sm font-medium transition-all"
               style={{
-                borderColor: `${FOREST}20`,
-                color: `${FOREST}70`,
+                borderColor: GLASS_BORDER,
+                color: TEXT_MUTED,
               }}
             >
               Cancel

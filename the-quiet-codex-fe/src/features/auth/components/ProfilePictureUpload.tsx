@@ -1,6 +1,14 @@
 import { useRef, useState } from "react";
 import { FiCamera, FiTrash2 } from "react-icons/fi";
-import { SAGE, FOREST, colors } from "../../../lib/theme";
+import {
+  TEXT_PRIMARY,
+  TEXT_DIM,
+  GLASS,
+  GLASS_BORDER,
+  GLASS_HOVER,
+  GRADIENT_PRIMARY,
+  colors,
+} from "../../../lib/theme";
 import {
   validateImageFile,
   MAX_PROFILE_PIC_SIZE,
@@ -58,11 +66,11 @@ export default function ProfilePictureUpload({
   return (
     <div
       className="rounded-2xl border p-6"
-      style={{ borderColor: `${FOREST}10`, background: "white" }}
+      style={{ borderColor: GLASS_BORDER, background: GLASS }}
     >
       <h3
         className="mb-4 text-sm font-semibold uppercase tracking-wider"
-        style={{ color: `${FOREST}50` }}
+        style={{ color: TEXT_DIM }}
       >
         Profile Picture
       </h3>
@@ -85,7 +93,7 @@ export default function ProfilePictureUpload({
             ) : (
               <div
                 className="flex h-full w-full items-center justify-center text-2xl font-semibold text-white"
-                style={{ background: SAGE }}
+                style={{ background: GRADIENT_PRIMARY }}
               >
                 {username.charAt(0).toUpperCase()}
               </div>
@@ -101,8 +109,12 @@ export default function ProfilePictureUpload({
             type="button"
             onClick={() => fileRef.current?.click()}
             disabled={isLoading}
-            className="rounded-full px-4 py-2 text-sm font-medium transition-all"
-            style={{ background: `${FOREST}08`, color: FOREST }}
+            className="rounded-lg px-4 py-2 text-sm font-medium transition-all"
+            style={{
+              background: GLASS_HOVER,
+              color: TEXT_PRIMARY,
+              border: `1px solid ${GLASS_BORDER}`,
+            }}
           >
             {isLoading ? "Uploading..." : "Change picture"}
           </button>
@@ -112,7 +124,7 @@ export default function ProfilePictureUpload({
               type="button"
               onClick={handleDelete}
               disabled={isLoading}
-              className="ml-2 inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium transition-all"
+              className="ml-2 inline-flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium transition-all"
               style={{ background: colors.dangerBg, color: colors.danger }}
             >
               <FiTrash2 size={12} />
@@ -120,7 +132,7 @@ export default function ProfilePictureUpload({
             </button>
           )}
 
-          <p className="text-xs" style={{ color: `${FOREST}40` }}>
+          <p className="text-xs" style={{ color: TEXT_DIM }}>
             JPEG, PNG, GIF, WebP, AVIF — max 5 MB
           </p>
         </div>

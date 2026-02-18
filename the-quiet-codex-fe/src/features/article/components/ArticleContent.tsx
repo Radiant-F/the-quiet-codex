@@ -1,7 +1,17 @@
 import { Link } from "react-router-dom";
 import { FiArrowLeft, FiCalendar } from "react-icons/fi";
 import type { Article } from "../article.domain";
-import { SERIF, SANS, FOREST, SAGE } from "../../../lib/theme";
+import {
+  DISPLAY,
+  SANS,
+  TEXT_PRIMARY,
+  TEXT_MUTED,
+  TEXT_DIM,
+  AURORA_2,
+  GLASS,
+  GLASS_BORDER,
+  GRADIENT_PRIMARY,
+} from "../../../lib/theme";
 
 interface ArticleContentProps {
   article: Article;
@@ -22,8 +32,8 @@ export default function ArticleContent({ article }: ArticleContentProps) {
       {/* Back link */}
       <Link
         to="/articles"
-        className="mb-8 inline-flex items-center gap-2 text-sm transition-colors"
-        style={{ color: `${FOREST}50` }}
+        className="mb-8 inline-flex items-center gap-2 text-sm transition-colors hover:opacity-80"
+        style={{ color: TEXT_DIM }}
       >
         <FiArrowLeft size={14} />
         Back to articles
@@ -31,7 +41,7 @@ export default function ArticleContent({ article }: ArticleContentProps) {
 
       {/* Banner */}
       {article.bannerImageUrl && (
-        <div className="mb-8 overflow-hidden rounded-3xl">
+        <div className="mb-8 overflow-hidden rounded-2xl">
           <img
             src={article.bannerImageUrl}
             alt=""
@@ -44,7 +54,7 @@ export default function ArticleContent({ article }: ArticleContentProps) {
       <header className="mb-10">
         <h1
           className="mb-4 text-4xl font-semibold leading-tight md:text-5xl"
-          style={{ fontFamily: SERIF, color: FOREST }}
+          style={{ fontFamily: DISPLAY, color: TEXT_PRIMARY }}
         >
           {article.title}
         </h1>
@@ -52,7 +62,7 @@ export default function ArticleContent({ article }: ArticleContentProps) {
         {article.metaDescription && (
           <p
             className="mb-6 text-lg leading-relaxed"
-            style={{ color: `${FOREST}60` }}
+            style={{ color: TEXT_MUTED }}
           >
             {article.metaDescription}
           </p>
@@ -60,8 +70,8 @@ export default function ArticleContent({ article }: ArticleContentProps) {
 
         {/* Author bar */}
         <div
-          className="flex items-center gap-4 rounded-2xl px-5 py-4"
-          style={{ background: `${SAGE}08`, border: `1px solid ${FOREST}06` }}
+          className="flex items-center gap-4 rounded-xl px-5 py-4"
+          style={{ background: GLASS, border: `1px solid ${GLASS_BORDER}` }}
         >
           {article.author.profilePictureUrl ? (
             <img
@@ -71,19 +81,22 @@ export default function ArticleContent({ article }: ArticleContentProps) {
             />
           ) : (
             <div
-              className="flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold text-white"
-              style={{ background: SAGE }}
+              className="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-semibold text-white"
+              style={{ background: GRADIENT_PRIMARY }}
             >
               {article.author.username.charAt(0).toUpperCase()}
             </div>
           )}
           <div>
-            <p className="text-sm font-semibold" style={{ color: FOREST }}>
+            <p
+              className="text-sm font-semibold"
+              style={{ color: TEXT_PRIMARY }}
+            >
               {article.author.username}
             </p>
             <p
               className="flex items-center gap-1 text-xs"
-              style={{ color: `${FOREST}50` }}
+              style={{ color: TEXT_DIM }}
             >
               <FiCalendar size={11} />
               {date}
@@ -100,11 +113,11 @@ export default function ArticleContent({ article }: ArticleContentProps) {
 
       {/* Footer divider */}
       <div className="my-16 flex items-center justify-center gap-4">
-        <div className="h-px w-20" style={{ background: `${SAGE}30` }} />
-        <span className="text-xs" style={{ color: `${FOREST}30` }}>
+        <div className="h-px w-20" style={{ background: GLASS_BORDER }} />
+        <span className="text-xs" style={{ color: TEXT_DIM }}>
           fin
         </span>
-        <div className="h-px w-20" style={{ background: `${SAGE}30` }} />
+        <div className="h-px w-20" style={{ background: GLASS_BORDER }} />
       </div>
     </article>
   );

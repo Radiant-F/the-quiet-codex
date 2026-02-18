@@ -20,7 +20,15 @@ import {
   LuListOrdered,
   LuTextQuote,
 } from "react-icons/lu";
-import { SAGE, FOREST, CREAM } from "../../../lib/theme";
+import {
+  AURORA_1,
+  AURORA_2,
+  TEXT_PRIMARY,
+  TEXT_DIM,
+  GLASS,
+  GLASS_BORDER,
+  GLASS_HOVER,
+} from "../../../lib/theme";
 import { useCallback } from "react";
 
 interface ArticleEditorProps {
@@ -46,8 +54,8 @@ function ToolbarButton({
       title={title}
       className="rounded-lg p-2 transition-all"
       style={{
-        background: isActive ? `${SAGE}25` : "transparent",
-        color: isActive ? SAGE : `${FOREST}70`,
+        background: isActive ? `rgba(123,97,255,0.15)` : "transparent",
+        color: isActive ? AURORA_1 : TEXT_DIM,
       }}
     >
       {children}
@@ -109,13 +117,13 @@ export default function ArticleEditor({
 
   return (
     <div
-      className="tiptap-editor overflow-hidden rounded-2xl border"
-      style={{ borderColor: `${FOREST}15`, background: CREAM }}
+      className="tiptap-editor overflow-hidden rounded-xl border"
+      style={{ borderColor: GLASS_BORDER, background: GLASS }}
     >
       {/* Toolbar */}
       <div
         className="flex flex-wrap gap-0.5 border-b px-3 py-2"
-        style={{ borderColor: `${FOREST}10`, background: `${CREAM}` }}
+        style={{ borderColor: GLASS_BORDER, background: GLASS_HOVER }}
       >
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleBold().run()}
@@ -141,7 +149,7 @@ export default function ArticleEditor({
 
         <div
           className="mx-1 w-px self-stretch"
-          style={{ background: `${FOREST}10` }}
+          style={{ background: GLASS_BORDER }}
         />
 
         <ToolbarButton
@@ -165,7 +173,7 @@ export default function ArticleEditor({
 
         <div
           className="mx-1 w-px self-stretch"
-          style={{ background: `${FOREST}10` }}
+          style={{ background: GLASS_BORDER }}
         />
 
         <ToolbarButton
@@ -192,7 +200,7 @@ export default function ArticleEditor({
 
         <div
           className="mx-1 w-px self-stretch"
-          style={{ background: `${FOREST}10` }}
+          style={{ background: GLASS_BORDER }}
         />
 
         <ToolbarButton

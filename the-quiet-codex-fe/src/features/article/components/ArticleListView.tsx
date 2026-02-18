@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { FiFeather, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { FiBookOpen, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import type { MyArticleListParams } from "../article.domain";
 import {
   useListMyArticlesQuery,
@@ -8,7 +8,15 @@ import {
 } from "../services/article.api";
 import ArticleCard from "./ArticleCard";
 import DeleteArticleDialog from "./DeleteArticleDialog";
-import { SERIF, FOREST } from "../../../lib/theme";
+import {
+  DISPLAY,
+  TEXT_PRIMARY,
+  TEXT_MUTED,
+  TEXT_DIM,
+  GLASS,
+  GLASS_BORDER,
+  GRADIENT_PRIMARY,
+} from "../../../lib/theme";
 
 const LIMIT = 8;
 
@@ -39,7 +47,7 @@ export default function ArticleListView() {
           <div
             key={i}
             className="h-72 animate-pulse rounded-2xl"
-            style={{ background: `${FOREST}06` }}
+            style={{ background: GLASS, border: `1px solid ${GLASS_BORDER}` }}
           />
         ))}
       </div>
@@ -49,29 +57,25 @@ export default function ArticleListView() {
   if (!data || data.articles.length === 0) {
     return (
       <div
-        className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed py-20 text-center"
-        style={{ borderColor: `${FOREST}12` }}
+        className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed py-20 text-center"
+        style={{ borderColor: GLASS_BORDER }}
       >
-        <FiFeather
-          size={40}
-          className="mb-4"
-          style={{ color: `${FOREST}20` }}
-        />
+        <FiBookOpen size={40} className="mb-4" style={{ color: TEXT_DIM }} />
         <h3
           className="mb-2 text-2xl font-semibold"
-          style={{ fontFamily: SERIF, color: FOREST }}
+          style={{ fontFamily: DISPLAY, color: TEXT_PRIMARY }}
         >
           No articles yet
         </h3>
-        <p className="mb-6 text-sm" style={{ color: `${FOREST}50` }}>
-          Start writing your first article — your ideas are waiting to bloom.
+        <p className="mb-6 text-sm" style={{ color: TEXT_MUTED }}>
+          Start writing your first article — your ideas are waiting to shine.
         </p>
         <Link
           to="/dashboard/articles/new"
-          className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium text-white shadow-lg transition-all hover:shadow-xl"
-          style={{ background: FOREST }}
+          className="inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-medium text-white transition-all hover:brightness-110"
+          style={{ background: GRADIENT_PRIMARY }}
         >
-          <FiFeather size={14} />
+          <FiBookOpen size={14} />
           Write your first article
         </Link>
       </div>
@@ -99,25 +103,25 @@ export default function ArticleListView() {
             type="button"
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="inline-flex items-center gap-1 rounded-full border px-4 py-2 text-sm font-medium transition-all disabled:opacity-30"
+            className="inline-flex items-center gap-1 rounded-lg border px-4 py-2 text-sm font-medium transition-all disabled:opacity-30"
             style={{
-              borderColor: `${FOREST}20`,
-              color: FOREST,
+              borderColor: GLASS_BORDER,
+              color: TEXT_PRIMARY,
             }}
           >
             <FiChevronLeft size={14} /> Previous
           </button>
-          <span className="text-sm" style={{ color: `${FOREST}50` }}>
+          <span className="text-sm" style={{ color: TEXT_MUTED }}>
             {page} / {data.totalPages}
           </span>
           <button
             type="button"
             onClick={() => setPage((p) => Math.min(data.totalPages, p + 1))}
             disabled={page >= data.totalPages}
-            className="inline-flex items-center gap-1 rounded-full border px-4 py-2 text-sm font-medium transition-all disabled:opacity-30"
+            className="inline-flex items-center gap-1 rounded-lg border px-4 py-2 text-sm font-medium transition-all disabled:opacity-30"
             style={{
-              borderColor: `${FOREST}20`,
-              color: FOREST,
+              borderColor: GLASS_BORDER,
+              color: TEXT_PRIMARY,
             }}
           >
             Next <FiChevronRight size={14} />

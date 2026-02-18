@@ -8,7 +8,12 @@ import {
 } from "../../../features/auth";
 import { useMeQuery } from "../../../features/auth/services/auth.api";
 import { FiLoader } from "react-icons/fi";
-import { SAGE, FOREST, SERIF } from "../../../lib/theme";
+import {
+  AURORA_2,
+  TEXT_PRIMARY,
+  TEXT_MUTED,
+  DISPLAY,
+} from "../../../lib/theme";
 
 export default function ProfilePage() {
   const { data: user, isLoading, error } = useMeQuery();
@@ -16,7 +21,11 @@ export default function ProfilePage() {
   if (isLoading) {
     return (
       <div className="flex justify-center py-32">
-        <FiLoader size={32} className="animate-spin" style={{ color: SAGE }} />
+        <FiLoader
+          size={32}
+          className="animate-spin"
+          style={{ color: AURORA_2 }}
+        />
       </div>
     );
   }
@@ -26,11 +35,11 @@ export default function ProfilePage() {
       <div className="py-32 text-center">
         <h2
           className="mb-2 text-2xl font-semibold"
-          style={{ fontFamily: SERIF, color: FOREST }}
+          style={{ fontFamily: DISPLAY, color: TEXT_PRIMARY }}
         >
           Could not load profile
         </h2>
-        <p className="text-sm" style={{ color: `${FOREST}80` }}>
+        <p className="text-sm" style={{ color: TEXT_MUTED }}>
           Please try again later.
         </p>
       </div>

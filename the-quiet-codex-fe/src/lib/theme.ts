@@ -1,57 +1,53 @@
 /*
- * BOTANICAL ZEN — Design System Constants
+ * ETHEREAL GLASS / AURORA — Design System Constants
  *
- * Palette: warm cream, sage, terracotta, deep forest, soft blush.
- * Typography: Cormorant Garamond (headings), DM Sans (body).
+ * Palette: deep navy, aurora gradients, frosted glass, luminous accents.
+ * Typography: Bricolage Grotesque (headings), Manrope (body).
  */
 
 // ── Typography ─────────────────────────
-export const SERIF = "'Cormorant Garamond', Georgia, serif";
-export const SANS = "'DM Sans', sans-serif";
+export const DISPLAY = "'Bricolage Grotesque', 'DM Sans', sans-serif";
+export const SANS = "'Manrope', 'DM Sans', sans-serif";
 
-// ── Colors ─────────────────────────────
-export const CREAM = "#FDF6EC";
-export const SAGE = "#87A878";
-export const TERRACOTTA = "#C4704B";
-export const FOREST = "#2D4A3E";
-export const BLUSH = "#E8D5C4";
+// ── Core palette ───────────────────────
+export const DEEP = "#080B1A";
+export const AURORA_1 = "#7B61FF";
+export const AURORA_2 = "#00D4AA";
+export const AURORA_3 = "#FF6BCA";
+export const AURORA_4 = "#00B4FF";
+
+// ── Glass tokens ───────────────────────
+export const GLASS = "rgba(255,255,255,0.04)";
+export const GLASS_BORDER = "rgba(255,255,255,0.08)";
+export const GLASS_HOVER = "rgba(255,255,255,0.07)";
+export const GLASS_HOVER_BORDER = "rgba(255,255,255,0.15)";
+
+// ── Text ───────────────────────────────
+export const TEXT_PRIMARY = "#F0F0FF";
+export const TEXT_MUTED = "rgba(240,240,255,0.5)";
+export const TEXT_DIM = "rgba(240,240,255,0.35)";
 
 // ── Semantic aliases ───────────────────
 export const colors = {
-  bg: CREAM,
-  text: FOREST,
-  primary: FOREST,
-  secondary: SAGE,
-  accent: TERRACOTTA,
-  surface: "#FFFFFF",
-  muted: `${FOREST}60`,
-  subtle: `${FOREST}40`,
-  border: `${FOREST}15`,
-  borderHover: `${FOREST}25`,
-  sageBg: `${SAGE}15`,
-  sageText: SAGE,
-  terraBg: `${TERRACOTTA}15`,
-  terraText: TERRACOTTA,
-  danger: "#B91C1C",
-  dangerBg: "#FEF2F2",
-  dangerBorder: "#FECACA",
+  bg: DEEP,
+  text: TEXT_PRIMARY,
+  primary: AURORA_1,
+  secondary: AURORA_2,
+  accent: AURORA_3,
+  surface: GLASS,
+  muted: TEXT_MUTED,
+  subtle: TEXT_DIM,
+  border: GLASS_BORDER,
+  borderHover: GLASS_HOVER_BORDER,
+  sageBg: `${AURORA_2}15`,
+  sageText: AURORA_2,
+  terraBg: `${AURORA_3}15`,
+  terraText: AURORA_3,
+  danger: "#FF4D6A",
+  dangerBg: "rgba(255,77,106,0.08)",
+  dangerBorder: "rgba(255,77,106,0.2)",
 } as const;
 
-// ── CSS animation keyframes (inject into <style>) ──
-export const KEYFRAMES = `
-  @keyframes float {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-20px) rotate(3deg); }
-  }
-  @keyframes float-slow {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-12px) rotate(-2deg); }
-  }
-  @keyframes breathe {
-    0%, 100% { transform: scale(1); opacity: 0.15; }
-    50% { transform: scale(1.08); opacity: 0.25; }
-  }
-  .float { animation: float 8s ease-in-out infinite; }
-  .float-slow { animation: float-slow 10s ease-in-out infinite; }
-  .breathe { animation: breathe 6s ease-in-out infinite; }
-`;
+// ── Gradients ──────────────────────────
+export const GRADIENT_PRIMARY = `linear-gradient(135deg, ${AURORA_1}, ${AURORA_2})`;
+export const GRADIENT_ACCENT = `linear-gradient(135deg, ${AURORA_3}, ${AURORA_1})`;

@@ -3,7 +3,17 @@ import { useForm } from "react-hook-form";
 import { FiSave, FiUser, FiLock } from "react-icons/fi";
 import type { UpdateMeRequest } from "../auth.domain";
 import { useUpdateMeMutation } from "../services/auth.api";
-import { FOREST, SAGE, CREAM, colors } from "../../../lib/theme";
+import {
+  TEXT_PRIMARY,
+  TEXT_MUTED,
+  TEXT_DIM,
+  AURORA_2,
+  GLASS,
+  GLASS_BORDER,
+  GLASS_HOVER,
+  GRADIENT_PRIMARY,
+  colors,
+} from "../../../lib/theme";
 
 interface FormValues {
   username: string;
@@ -61,11 +71,11 @@ export default function ProfileEditForm({
   return (
     <div
       className="rounded-2xl border p-6"
-      style={{ borderColor: `${FOREST}10`, background: "white" }}
+      style={{ borderColor: GLASS_BORDER, background: GLASS }}
     >
       <h3
         className="mb-6 text-sm font-semibold uppercase tracking-wider"
-        style={{ color: `${FOREST}50` }}
+        style={{ color: TEXT_DIM }}
       >
         Edit Profile
       </h3>
@@ -75,17 +85,17 @@ export default function ProfileEditForm({
         <div className="space-y-2">
           <label
             className="flex items-center gap-2 text-sm font-medium"
-            style={{ color: `${FOREST}80` }}
+            style={{ color: TEXT_MUTED }}
           >
             <FiUser size={14} />
             Username
           </label>
           <input
-            className="w-full rounded-xl border px-4 py-2.5 text-sm outline-none transition-colors focus:border-[#87A878]"
+            className="w-full rounded-xl border px-4 py-2.5 text-sm outline-none transition-colors"
             style={{
-              borderColor: `${FOREST}15`,
-              background: CREAM,
-              color: FOREST,
+              borderColor: GLASS_BORDER,
+              background: GLASS_HOVER,
+              color: TEXT_PRIMARY,
             }}
             {...register("username", {
               required: "Username is required",
@@ -103,7 +113,7 @@ export default function ProfileEditForm({
         <div className="space-y-2">
           <label
             className="flex items-center gap-2 text-sm font-medium"
-            style={{ color: `${FOREST}80` }}
+            style={{ color: TEXT_MUTED }}
           >
             <FiLock size={14} />
             New Password
@@ -111,11 +121,11 @@ export default function ProfileEditForm({
           <input
             type="password"
             placeholder="Leave blank to keep current"
-            className="w-full rounded-xl border px-4 py-2.5 text-sm outline-none transition-colors focus:border-[#87A878]"
+            className="w-full rounded-xl border px-4 py-2.5 text-sm outline-none transition-colors"
             style={{
-              borderColor: `${FOREST}15`,
-              background: CREAM,
-              color: FOREST,
+              borderColor: GLASS_BORDER,
+              background: GLASS_HOVER,
+              color: TEXT_PRIMARY,
             }}
             {...register("password", {
               minLength: {
@@ -136,7 +146,7 @@ export default function ProfileEditForm({
           <div className="space-y-2">
             <label
               className="flex items-center gap-2 text-sm font-medium"
-              style={{ color: `${FOREST}80` }}
+              style={{ color: TEXT_MUTED }}
             >
               <FiLock size={14} />
               Confirm Password
@@ -144,11 +154,11 @@ export default function ProfileEditForm({
             <input
               type="password"
               placeholder="Re-enter new password"
-              className="w-full rounded-xl border px-4 py-2.5 text-sm outline-none transition-colors focus:border-[#87A878]"
+              className="w-full rounded-xl border px-4 py-2.5 text-sm outline-none transition-colors"
               style={{
-                borderColor: `${FOREST}15`,
-                background: CREAM,
-                color: FOREST,
+                borderColor: GLASS_BORDER,
+                background: GLASS_HOVER,
+                color: TEXT_PRIMARY,
               }}
               {...register("confirmPassword", {
                 validate: (val) =>
@@ -180,9 +190,9 @@ export default function ProfileEditForm({
           <div
             className="rounded-xl px-4 py-3 text-sm"
             style={{
-              background: `${SAGE}10`,
-              color: SAGE,
-              border: `1px solid ${SAGE}30`,
+              background: "rgba(0,212,170,0.08)",
+              color: AURORA_2,
+              border: "1px solid rgba(0,212,170,0.2)",
             }}
           >
             Profile updated successfully.
@@ -192,8 +202,8 @@ export default function ProfileEditForm({
         <button
           type="submit"
           disabled={updateState.isLoading}
-          className="inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-medium text-white transition-all hover:shadow-lg disabled:opacity-60"
-          style={{ background: FOREST }}
+          className="inline-flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-medium text-white transition-all hover:brightness-110 disabled:opacity-60"
+          style={{ background: GRADIENT_PRIMARY }}
         >
           <FiSave size={14} />
           {updateState.isLoading ? "Saving..." : "Save Changes"}

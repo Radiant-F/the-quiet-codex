@@ -3,7 +3,19 @@ import { useForm } from "react-hook-form";
 import { FiUser, FiLock, FiArrowRight } from "react-icons/fi";
 import type { SignInRequest, SignUpRequest } from "../auth.domain";
 import { useSignInMutation, useSignUpMutation } from "../services/auth.api";
-import { SERIF, FOREST, SAGE, TERRACOTTA, BLUSH } from "../../../lib/theme";
+import {
+  DISPLAY,
+  TEXT_PRIMARY,
+  TEXT_MUTED,
+  TEXT_DIM,
+  AURORA_1,
+  AURORA_2,
+  AURORA_3,
+  GLASS,
+  GLASS_BORDER,
+  GLASS_HOVER,
+  GRADIENT_PRIMARY,
+} from "../../../lib/theme";
 
 type AuthFormValues = SignInRequest | SignUpRequest;
 
@@ -35,31 +47,31 @@ export default function AuthForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-5 rounded-3xl p-7 shadow-lg"
+      className="space-y-5 rounded-2xl p-7"
       style={{
-        background: "rgba(255,255,255,0.75)",
-        backdropFilter: "blur(12px)",
-        border: `1px solid ${SAGE}25`,
+        background: GLASS,
+        backdropFilter: "blur(16px)",
+        border: `1px solid ${GLASS_BORDER}`,
       }}
     >
       <div className="flex items-center justify-between">
         <div>
           <p
             className="text-xl font-semibold"
-            style={{ fontFamily: SERIF, color: FOREST }}
+            style={{ fontFamily: DISPLAY, color: TEXT_PRIMARY }}
           >
             {mode === "signin" ? "Sign in" : "Create account"}
           </p>
-          <p className="text-xs" style={{ color: `${FOREST}60` }}>
+          <p className="text-xs" style={{ color: TEXT_DIM }}>
             {mode === "signin"
-              ? "Welcome back to your garden."
-              : "Plant your first seed today."}
+              ? "Welcome back to your space."
+              : "Start your creative journey."}
           </p>
         </div>
         <button
           type="button"
           className="text-xs font-semibold transition-colors hover:underline"
-          style={{ color: TERRACOTTA }}
+          style={{ color: AURORA_2 }}
           onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
         >
           {mode === "signin" ? "Need an account?" : "Already registered?"}
@@ -67,51 +79,45 @@ export default function AuthForm() {
       </div>
 
       <label className="block space-y-2 text-sm font-medium">
-        <span
-          className="flex items-center gap-2"
-          style={{ color: `${FOREST}80` }}
-        >
+        <span className="flex items-center gap-2" style={{ color: TEXT_MUTED }}>
           <FiUser size={14} />
           Username
         </span>
         <input
-          className="w-full rounded-2xl border px-4 py-3 text-sm outline-none transition-colors"
+          className="w-full rounded-xl border px-4 py-3 text-sm outline-none transition-colors placeholder:opacity-40"
           style={{
-            borderColor: `${SAGE}40`,
-            background: `${BLUSH}40`,
-            color: FOREST,
+            borderColor: GLASS_BORDER,
+            background: GLASS_HOVER,
+            color: TEXT_PRIMARY,
           }}
           placeholder="quiet-coder"
           {...register("username", { required: "Username is required" })}
         />
         {formState.errors.username ? (
-          <span className="text-xs" style={{ color: "#c0392b" }}>
+          <span className="text-xs" style={{ color: "#FF4D6A" }}>
             {formState.errors.username.message}
           </span>
         ) : null}
       </label>
 
       <label className="block space-y-2 text-sm font-medium">
-        <span
-          className="flex items-center gap-2"
-          style={{ color: `${FOREST}80` }}
-        >
+        <span className="flex items-center gap-2" style={{ color: TEXT_MUTED }}>
           <FiLock size={14} />
           Password
         </span>
         <input
-          className="w-full rounded-2xl border px-4 py-3 text-sm outline-none transition-colors"
+          className="w-full rounded-xl border px-4 py-3 text-sm outline-none transition-colors placeholder:opacity-40"
           style={{
-            borderColor: `${SAGE}40`,
-            background: `${BLUSH}40`,
-            color: FOREST,
+            borderColor: GLASS_BORDER,
+            background: GLASS_HOVER,
+            color: TEXT_PRIMARY,
           }}
           type="password"
           placeholder="••••••••"
           {...register("password", { required: "Password is required" })}
         />
         {formState.errors.password ? (
-          <span className="text-xs" style={{ color: "#c0392b" }}>
+          <span className="text-xs" style={{ color: "#FF4D6A" }}>
             {formState.errors.password.message}
           </span>
         ) : null}
@@ -119,20 +125,24 @@ export default function AuthForm() {
 
       <label
         className="flex items-center justify-between text-xs"
-        style={{ color: `${FOREST}70` }}
+        style={{ color: TEXT_DIM }}
       >
         <span className="flex items-center gap-2">
           <input
             type="checkbox"
             className="h-4 w-4 rounded"
-            style={{ accentColor: SAGE }}
+            style={{ accentColor: AURORA_1 }}
             {...register("rememberMe")}
           />
           Remember this device
         </span>
         <span
           className="rounded-full px-3 py-1 text-xs font-medium"
-          style={{ background: `${SAGE}15`, color: SAGE }}
+          style={{
+            background: GLASS,
+            color: AURORA_2,
+            border: `1px solid ${GLASS_BORDER}`,
+          }}
         >
           {mode === "signin" ? "login" : "signup"}
         </span>
@@ -141,8 +151,8 @@ export default function AuthForm() {
       <button
         type="submit"
         disabled={isLoading}
-        className="flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-3.5 text-sm font-semibold text-white transition-all hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
-        style={{ background: FOREST }}
+        className="flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3.5 text-sm font-semibold text-white transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+        style={{ background: GRADIENT_PRIMARY }}
       >
         {isLoading ? "Working..." : "Continue"}
         <FiArrowRight />

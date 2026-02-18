@@ -9,7 +9,7 @@ import {
 import { lazy, Suspense, useEffect } from "react";
 import { useAppSelector } from "./hooks";
 import { FiLoader } from "react-icons/fi";
-import { SAGE } from "./lib/theme";
+import { AURORA_2 } from "./lib/theme";
 
 /* ---------- lazy pages ---------- */
 const Root = lazy(() => import("./pages/root"));
@@ -25,8 +25,15 @@ const Profile = lazy(() => import("./pages/dashboard/profile"));
 /* ---------- helpers ---------- */
 function Spinner() {
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <FiLoader size={32} className="animate-spin" style={{ color: SAGE }} />
+    <div
+      className="flex min-h-screen items-center justify-center"
+      style={{ background: "#080B1A" }}
+    >
+      <FiLoader
+        size={32}
+        className="animate-spin"
+        style={{ color: AURORA_2 }}
+      />
     </div>
   );
 }

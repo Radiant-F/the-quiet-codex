@@ -1,4 +1,4 @@
-import { SERIF, FOREST } from "../lib/theme";
+import { DISPLAY, TEXT_PRIMARY, TEXT_DIM, AURORA_2 } from "../lib/theme";
 
 interface DashboardHeaderProps {
   title: string;
@@ -17,14 +17,14 @@ export default function DashboardHeader({
         {subtitle && (
           <p
             className="mb-1 text-xs font-semibold uppercase tracking-[0.15em]"
-            style={{ color: `${FOREST}40` }}
+            style={{ color: AURORA_2 }}
           >
             {subtitle}
           </p>
         )}
         <h1
           className="text-3xl font-semibold md:text-4xl"
-          style={{ fontFamily: SERIF, color: FOREST }}
+          style={{ fontFamily: DISPLAY, color: TEXT_PRIMARY }}
         >
           {title}
         </h1>

@@ -1,17 +1,21 @@
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { FiFeather, FiLoader } from "react-icons/fi";
+import { FiBookOpen, FiLoader } from "react-icons/fi";
 import { useGetArticleBySlugQuery } from "../../features/article";
 import { ArticleContent } from "../../features/article";
-import BlobSVG from "../../components/BlobSVG";
 import {
-  SERIF,
+  DISPLAY,
   SANS,
-  FOREST,
-  SAGE,
-  TERRACOTTA,
-  CREAM,
-  KEYFRAMES,
+  DEEP,
+  TEXT_PRIMARY,
+  TEXT_MUTED,
+  TEXT_DIM,
+  AURORA_1,
+  AURORA_2,
+  AURORA_3,
+  AURORA_4,
+  GLASS_BORDER,
+  GRADIENT_PRIMARY,
 } from "../../lib/theme";
 
 export default function ArticleSlugPage() {
@@ -37,7 +41,7 @@ export default function ArticleSlugPage() {
   return (
     <div
       className="min-h-screen overflow-hidden"
-      style={{ background: CREAM, color: FOREST, fontFamily: SANS }}
+      style={{ background: DEEP, color: TEXT_PRIMARY, fontFamily: SANS }}
     >
       {article && (
         <Helmet>
@@ -46,6 +50,7 @@ export default function ArticleSlugPage() {
             name="description"
             content={article.metaDescription ?? article.title}
           />
+          <meta name="theme-color" content={DEEP} />
           <meta property="og:title" content={article.title} />
           <meta
             property="og:description"
@@ -67,55 +72,69 @@ export default function ArticleSlugPage() {
           {jsonLd && (
             <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
           )}
+          <link
+            href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@300;400;500;600;700;800&family=Manrope:wght@300;400;500;600;700;800&display=swap"
+            rel="stylesheet"
+          />
         </Helmet>
       )}
 
-      <style>{KEYFRAMES}</style>
+      {/* Noise */}
+      <div className="noise-overlay pointer-events-none fixed inset-0 z-[1]" />
+
+      {/* Ambient orb */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div
+          className="absolute -top-40 right-1/4"
+          style={{
+            width: 400,
+            height: 400,
+            borderRadius: "50%",
+            background: `conic-gradient(from 90deg, ${AURORA_1}, ${AURORA_2}, ${AURORA_3}, ${AURORA_4})`,
+            filter: "blur(120px)",
+            opacity: 0.2,
+          }}
+        />
+      </div>
 
       {/* Nav */}
       <nav className="relative z-20 flex items-center justify-between px-8 py-6 md:px-16">
         <Link to="/" className="flex items-center gap-3">
           <div
-            className="flex h-10 w-10 items-center justify-center rounded-full text-white"
-            style={{ background: SAGE }}
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-white"
+            style={{ background: GRADIENT_PRIMARY }}
           >
-            <FiFeather size={18} />
+            <FiBookOpen size={16} />
           </div>
           <div>
             <span
               className="text-xl font-semibold"
-              style={{ fontFamily: SERIF }}
+              style={{ fontFamily: DISPLAY, color: TEXT_PRIMARY }}
             >
               The Quiet Codex
             </span>
-            <p className="text-xs" style={{ color: `${FOREST}40` }}>
-              Where ideas take root
+            <p className="text-xs" style={{ color: TEXT_DIM }}>
+              Where ideas illuminate
             </p>
           </div>
         </Link>
         <div className="flex items-center gap-4">
           <Link
             to="/articles"
-            className="hidden text-sm transition-colors md:block"
-            style={{ color: `${FOREST}50` }}
+            className="hidden text-sm transition-colors hover:opacity-80 md:block"
+            style={{ color: TEXT_DIM }}
           >
             All Articles
           </Link>
           <Link
             to="/auth"
-            className="rounded-full px-6 py-2.5 text-sm font-medium text-white transition-all hover:shadow-lg"
-            style={{ background: TERRACOTTA }}
+            className="rounded-lg px-6 py-2.5 text-sm font-medium text-white transition-all hover:brightness-110"
+            style={{ background: GRADIENT_PRIMARY }}
           >
             Sign In
           </Link>
         </div>
       </nav>
-
-      <BlobSVG
-        className="float-slow pointer-events-none absolute -right-60 top-0 w-[700px]"
-        color={SAGE}
-        opacity={0.05}
-      />
 
       {/* Content */}
       <section className="relative z-10 px-8 py-12 md:px-16 md:py-16">
@@ -124,7 +143,7 @@ export default function ArticleSlugPage() {
             <FiLoader
               size={32}
               className="animate-spin"
-              style={{ color: SAGE }}
+              style={{ color: AURORA_2 }}
             />
           </div>
         )}
@@ -133,17 +152,17 @@ export default function ArticleSlugPage() {
           <div className="mx-auto max-w-3xl py-32 text-center">
             <h2
               className="mb-2 text-3xl font-semibold"
-              style={{ fontFamily: SERIF }}
+              style={{ fontFamily: DISPLAY }}
             >
               Article not found
             </h2>
-            <p className="mb-6 text-sm" style={{ color: `${FOREST}50` }}>
+            <p className="mb-6 text-sm" style={{ color: TEXT_MUTED }}>
               This article may have been removed or the URL may be incorrect.
             </p>
             <Link
               to="/articles"
-              className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium text-white"
-              style={{ background: FOREST }}
+              className="inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-medium text-white"
+              style={{ background: GRADIENT_PRIMARY }}
             >
               Browse all articles
             </Link>
@@ -155,14 +174,14 @@ export default function ArticleSlugPage() {
 
       {/* Footer */}
       <footer
-        className="px-8 py-8 md:px-16"
-        style={{ borderTop: `1px solid ${FOREST}10` }}
+        className="relative z-10 px-8 py-8 md:px-16"
+        style={{ borderTop: `1px solid ${GLASS_BORDER}` }}
       >
         <div
           className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-sm md:flex-row"
-          style={{ color: `${FOREST}60` }}
+          style={{ color: TEXT_DIM }}
         >
-          <span style={{ fontFamily: SERIF }} className="text-base">
+          <span style={{ fontFamily: DISPLAY }} className="text-base">
             &copy; 2026 The Quiet Codex
           </span>
           <div className="flex items-center gap-6">
