@@ -1,2 +1,1 @@
-export { default as DashboardLayout } from "./DashboardLayout";
-export { default as DashboardHeader } from "./DashboardHeader";
+// Used for import and export global components
