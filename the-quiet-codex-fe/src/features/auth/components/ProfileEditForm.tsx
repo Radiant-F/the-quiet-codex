@@ -3,17 +3,6 @@ import { useForm } from "react-hook-form";
 import { FiSave, FiUser, FiLock } from "react-icons/fi";
 import type { UpdateMeRequest } from "../auth.domain";
 import { useUpdateMeMutation } from "../services/auth.api";
-import {
-  TEXT_PRIMARY,
-  TEXT_MUTED,
-  TEXT_DIM,
-  AURORA_2,
-  GLASS,
-  GLASS_BORDER,
-  GLASS_HOVER,
-  GRADIENT_PRIMARY,
-  colors,
-} from "../../../lib/theme";
 
 interface FormValues {
   username: string;
@@ -69,13 +58,10 @@ export default function ProfileEditForm({
   };
 
   return (
-    <div
-      className="rounded-2xl border p-6"
-      style={{ borderColor: GLASS_BORDER, background: GLASS }}
-    >
+    <div className="glass-panel rounded-2xl p-6">
       <h3
         className="mb-6 text-sm font-semibold uppercase tracking-wider"
-        style={{ color: TEXT_DIM }}
+        style={{ color: "var(--color-text-dim)" }}
       >
         Edit Profile
       </h3>
@@ -85,25 +71,20 @@ export default function ProfileEditForm({
         <div className="space-y-2">
           <label
             className="flex items-center gap-2 text-sm font-medium"
-            style={{ color: TEXT_MUTED }}
+            style={{ color: "var(--color-text-muted)" }}
           >
             <FiUser size={14} />
             Username
           </label>
           <input
-            className="w-full rounded-xl border px-4 py-2.5 text-sm outline-none transition-colors"
-            style={{
-              borderColor: GLASS_BORDER,
-              background: GLASS_HOVER,
-              color: TEXT_PRIMARY,
-            }}
+            className="input w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-colors"
             {...register("username", {
               required: "Username is required",
               minLength: { value: 3, message: "At least 3 characters" },
             })}
           />
           {formState.errors.username && (
-            <p className="text-xs" style={{ color: colors.danger }}>
+            <p className="text-xs" style={{ color: "var(--color-danger)" }}>
               {formState.errors.username.message}
             </p>
           )}
@@ -113,7 +94,7 @@ export default function ProfileEditForm({
         <div className="space-y-2">
           <label
             className="flex items-center gap-2 text-sm font-medium"
-            style={{ color: TEXT_MUTED }}
+            style={{ color: "var(--color-text-muted)" }}
           >
             <FiLock size={14} />
             New Password
@@ -121,12 +102,7 @@ export default function ProfileEditForm({
           <input
             type="password"
             placeholder="Leave blank to keep current"
-            className="w-full rounded-xl border px-4 py-2.5 text-sm outline-none transition-colors"
-            style={{
-              borderColor: GLASS_BORDER,
-              background: GLASS_HOVER,
-              color: TEXT_PRIMARY,
-            }}
+            className="input w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-colors"
             {...register("password", {
               minLength: {
                 value: 6,
@@ -135,7 +111,7 @@ export default function ProfileEditForm({
             })}
           />
           {formState.errors.password && (
-            <p className="text-xs" style={{ color: colors.danger }}>
+            <p className="text-xs" style={{ color: "var(--color-danger)" }}>
               {formState.errors.password.message}
             </p>
           )}
@@ -146,7 +122,7 @@ export default function ProfileEditForm({
           <div className="space-y-2">
             <label
               className="flex items-center gap-2 text-sm font-medium"
-              style={{ color: TEXT_MUTED }}
+              style={{ color: "var(--color-text-muted)" }}
             >
               <FiLock size={14} />
               Confirm Password
@@ -154,19 +130,14 @@ export default function ProfileEditForm({
             <input
               type="password"
               placeholder="Re-enter new password"
-              className="w-full rounded-xl border px-4 py-2.5 text-sm outline-none transition-colors"
-              style={{
-                borderColor: GLASS_BORDER,
-                background: GLASS_HOVER,
-                color: TEXT_PRIMARY,
-              }}
+              className="input w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-colors"
               {...register("confirmPassword", {
                 validate: (val) =>
                   val === passwordValue || "Passwords do not match",
               })}
             />
             {formState.errors.confirmPassword && (
-              <p className="text-xs" style={{ color: colors.danger }}>
+              <p className="text-xs" style={{ color: "var(--color-danger)" }}>
                 {formState.errors.confirmPassword.message}
               </p>
             )}
@@ -178,9 +149,9 @@ export default function ProfileEditForm({
           <div
             className="rounded-xl px-4 py-3 text-sm"
             style={{
-              background: colors.dangerBg,
-              color: colors.danger,
-              border: `1px solid ${colors.dangerBorder}`,
+              background: "var(--color-danger-bg)",
+              color: "var(--color-danger)",
+              border: "1px solid var(--color-danger-border)",
             }}
           >
             {serverError}
@@ -191,7 +162,7 @@ export default function ProfileEditForm({
             className="rounded-xl px-4 py-3 text-sm"
             style={{
               background: "rgba(0,212,170,0.08)",
-              color: AURORA_2,
+              color: "var(--color-aurora-teal)",
               border: "1px solid rgba(0,212,170,0.2)",
             }}
           >
@@ -202,8 +173,7 @@ export default function ProfileEditForm({
         <button
           type="submit"
           disabled={updateState.isLoading}
-          className="inline-flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-medium text-white transition-all hover:brightness-110 disabled:opacity-60"
-          style={{ background: GRADIENT_PRIMARY }}
+          className="btn btn-primary inline-flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-medium text-white transition-all disabled:opacity-60"
         >
           <FiSave size={14} />
           {updateState.isLoading ? "Saving..." : "Save Changes"}

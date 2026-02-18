@@ -1,15 +1,6 @@
 import { useRef, useState } from "react";
 import { FiCamera, FiTrash2 } from "react-icons/fi";
 import {
-  TEXT_PRIMARY,
-  TEXT_DIM,
-  GLASS,
-  GLASS_BORDER,
-  GLASS_HOVER,
-  GRADIENT_PRIMARY,
-  colors,
-} from "../../../lib/theme";
-import {
   validateImageFile,
   MAX_PROFILE_PIC_SIZE,
 } from "../../../lib/file-validation";
@@ -64,13 +55,10 @@ export default function ProfilePictureUpload({
   };
 
   return (
-    <div
-      className="rounded-2xl border p-6"
-      style={{ borderColor: GLASS_BORDER, background: GLASS }}
-    >
+    <div className="glass-panel rounded-2xl p-6">
       <h3
         className="mb-4 text-sm font-semibold uppercase tracking-wider"
-        style={{ color: TEXT_DIM }}
+        style={{ color: "var(--color-text-dim)" }}
       >
         Profile Picture
       </h3>
@@ -93,7 +81,10 @@ export default function ProfilePictureUpload({
             ) : (
               <div
                 className="flex h-full w-full items-center justify-center text-2xl font-semibold text-white"
-                style={{ background: GRADIENT_PRIMARY }}
+                style={{
+                  background:
+                    "linear-gradient(135deg, var(--color-aurora-purple), var(--color-aurora-teal))",
+                }}
               >
                 {username.charAt(0).toUpperCase()}
               </div>
@@ -109,12 +100,7 @@ export default function ProfilePictureUpload({
             type="button"
             onClick={() => fileRef.current?.click()}
             disabled={isLoading}
-            className="rounded-lg px-4 py-2 text-sm font-medium transition-all"
-            style={{
-              background: GLASS_HOVER,
-              color: TEXT_PRIMARY,
-              border: `1px solid ${GLASS_BORDER}`,
-            }}
+            className="btn btn-secondary rounded-lg px-4 py-2 text-sm font-medium transition-all"
           >
             {isLoading ? "Uploading..." : "Change picture"}
           </button>
@@ -124,15 +110,14 @@ export default function ProfilePictureUpload({
               type="button"
               onClick={handleDelete}
               disabled={isLoading}
-              className="ml-2 inline-flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium transition-all"
-              style={{ background: colors.dangerBg, color: colors.danger }}
+              className="btn btn-danger ml-2 inline-flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium transition-all"
             >
               <FiTrash2 size={12} />
               Remove
             </button>
           )}
 
-          <p className="text-xs" style={{ color: TEXT_DIM }}>
+          <p className="text-xs" style={{ color: "var(--color-text-dim)" }}>
             JPEG, PNG, GIF, WebP, AVIF — max 5 MB
           </p>
         </div>
@@ -153,7 +138,7 @@ export default function ProfilePictureUpload({
       {error && (
         <p
           className="mt-3 text-xs font-medium"
-          style={{ color: colors.danger }}
+          style={{ color: "var(--color-danger)" }}
         >
           {error}
         </p>

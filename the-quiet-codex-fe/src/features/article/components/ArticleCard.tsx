@@ -1,21 +1,6 @@
 import { Link } from "react-router-dom";
 import { FiEdit2, FiTrash2, FiClock, FiCheck } from "react-icons/fi";
 import type { ArticleListItem } from "../article.domain";
-import {
-  DISPLAY,
-  SANS,
-  TEXT_PRIMARY,
-  TEXT_MUTED,
-  TEXT_DIM,
-  AURORA_1,
-  AURORA_2,
-  AURORA_3,
-  GLASS,
-  GLASS_BORDER,
-  GLASS_HOVER,
-  GRADIENT_PRIMARY,
-  colors,
-} from "../../../lib/theme";
 
 interface ArticleCardProps {
   article: ArticleListItem;
@@ -33,13 +18,7 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
   });
 
   return (
-    <div
-      className="group relative overflow-hidden rounded-2xl border transition-all hover:border-[rgba(255,255,255,0.14)]"
-      style={{
-        borderColor: GLASS_BORDER,
-        background: GLASS,
-      }}
-    >
+    <div className="glass-panel group relative overflow-hidden rounded-2xl border transition-all hover:border-[rgba(255,255,255,0.14)]">
       {/* Banner */}
       {article.bannerImageUrl ? (
         <div className="h-40 overflow-hidden">
@@ -58,7 +37,10 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
         >
           <span
             className="text-3xl font-semibold opacity-20"
-            style={{ fontFamily: DISPLAY, color: TEXT_PRIMARY }}
+            style={{
+              fontFamily: "var(--font-display)",
+              color: "var(--color-text-primary)",
+            }}
           >
             {article.title.charAt(0)}
           </span>
@@ -69,13 +51,9 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
       <div className="p-5">
         <div className="mb-2 flex items-center gap-2">
           <span
-            className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium"
-            style={{
-              background: isPublished
-                ? "rgba(0,212,170,0.1)"
-                : "rgba(255,107,202,0.1)",
-              color: isPublished ? AURORA_2 : AURORA_3,
-            }}
+            className={
+              isPublished ? "badge badge-success" : "badge badge-warning"
+            }
           >
             {isPublished ? (
               <>
@@ -87,14 +65,17 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
               </>
             )}
           </span>
-          <span className="text-xs" style={{ color: TEXT_DIM }}>
+          <span className="text-xs" style={{ color: "var(--color-text-dim)" }}>
             {date}
           </span>
         </div>
 
         <h3
           className="mb-1 line-clamp-2 text-lg font-semibold"
-          style={{ fontFamily: DISPLAY, color: TEXT_PRIMARY }}
+          style={{
+            fontFamily: "var(--font-display)",
+            color: "var(--color-text-primary)",
+          }}
         >
           {article.title}
         </h3>
@@ -102,7 +83,10 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
         {article.metaDescription && (
           <p
             className="line-clamp-2 text-sm leading-relaxed"
-            style={{ color: TEXT_MUTED, fontFamily: SANS }}
+            style={{
+              color: "var(--color-text-muted)",
+              fontFamily: "var(--font-sans)",
+            }}
           >
             {article.metaDescription}
           </p>
@@ -112,12 +96,7 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
         <div className="mt-4 flex items-center gap-2">
           <Link
             to={`/dashboard/articles/${article.id}`}
-            className="inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-xs font-medium transition-all"
-            style={{
-              background: GLASS_HOVER,
-              color: TEXT_PRIMARY,
-              border: `1px solid ${GLASS_BORDER}`,
-            }}
+            className="btn btn-secondary inline-flex items-center gap-1.5 text-xs"
           >
             <FiEdit2 size={12} />
             Edit
@@ -125,11 +104,7 @@ export default function ArticleCard({ article, onDelete }: ArticleCardProps) {
           <button
             type="button"
             onClick={() => onDelete(article.id)}
-            className="inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-xs font-medium transition-all"
-            style={{
-              background: colors.dangerBg,
-              color: colors.danger,
-            }}
+            className="btn btn-danger inline-flex items-center gap-1.5 text-xs"
           >
             <FiTrash2 size={12} />
             Delete

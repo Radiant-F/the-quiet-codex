@@ -20,15 +20,6 @@ import {
   LuListOrdered,
   LuTextQuote,
 } from "react-icons/lu";
-import {
-  AURORA_1,
-  AURORA_2,
-  TEXT_PRIMARY,
-  TEXT_DIM,
-  GLASS,
-  GLASS_BORDER,
-  GLASS_HOVER,
-} from "../../../lib/theme";
 import { useCallback } from "react";
 
 interface ArticleEditorProps {
@@ -55,7 +46,9 @@ function ToolbarButton({
       className="rounded-lg p-2 transition-all"
       style={{
         background: isActive ? `rgba(123,97,255,0.15)` : "transparent",
-        color: isActive ? AURORA_1 : TEXT_DIM,
+        color: isActive
+          ? "var(--color-aurora-purple)"
+          : "var(--color-text-dim)",
       }}
     >
       {children}
@@ -118,12 +111,18 @@ export default function ArticleEditor({
   return (
     <div
       className="tiptap-editor overflow-hidden rounded-xl border"
-      style={{ borderColor: GLASS_BORDER, background: GLASS }}
+      style={{
+        borderColor: "var(--color-glass-border)",
+        background: "var(--color-glass)",
+      }}
     >
       {/* Toolbar */}
       <div
         className="flex flex-wrap gap-0.5 border-b px-3 py-2"
-        style={{ borderColor: GLASS_BORDER, background: GLASS_HOVER }}
+        style={{
+          borderColor: "var(--color-glass-border)",
+          background: "var(--color-glass-hover)",
+        }}
       >
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleBold().run()}
@@ -149,7 +148,7 @@ export default function ArticleEditor({
 
         <div
           className="mx-1 w-px self-stretch"
-          style={{ background: GLASS_BORDER }}
+          style={{ background: "var(--color-glass-border)" }}
         />
 
         <ToolbarButton
@@ -173,7 +172,7 @@ export default function ArticleEditor({
 
         <div
           className="mx-1 w-px self-stretch"
-          style={{ background: GLASS_BORDER }}
+          style={{ background: "var(--color-glass-border)" }}
         />
 
         <ToolbarButton
@@ -200,7 +199,7 @@ export default function ArticleEditor({
 
         <div
           className="mx-1 w-px self-stretch"
-          style={{ background: GLASS_BORDER }}
+          style={{ background: "var(--color-glass-border)" }}
         />
 
         <ToolbarButton

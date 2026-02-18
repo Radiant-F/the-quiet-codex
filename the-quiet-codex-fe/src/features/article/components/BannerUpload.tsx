@@ -1,18 +1,6 @@
 import { useRef, useState } from "react";
 import { FiUploadCloud, FiTrash2, FiImage } from "react-icons/fi";
 import {
-  AURORA_2,
-  TEXT_PRIMARY,
-  TEXT_MUTED,
-  TEXT_DIM,
-  GLASS,
-  GLASS_BORDER,
-  GLASS_HOVER,
-  GRADIENT_PRIMARY,
-  SANS,
-  colors,
-} from "../../../lib/theme";
-import {
   validateImageFile,
   MAX_BANNER_SIZE,
 } from "../../../lib/file-validation";
@@ -75,7 +63,10 @@ export default function BannerUpload({
     <div className="space-y-3">
       <label
         className="text-sm font-medium"
-        style={{ color: TEXT_PRIMARY, fontFamily: SANS }}
+        style={{
+          color: "var(--color-text-primary)",
+          fontFamily: "var(--font-sans)",
+        }}
       >
         Banner Image
       </label>
@@ -93,7 +84,10 @@ export default function BannerUpload({
               onClick={() => fileRef.current?.click()}
               disabled={isLoading}
               className="rounded-lg px-4 py-2 text-sm font-medium text-white transition-all"
-              style={{ background: GRADIENT_PRIMARY }}
+              style={{
+                background:
+                  "linear-gradient(135deg, var(--color-aurora-purple), var(--color-aurora-teal))",
+              }}
             >
               <FiUploadCloud className="inline mr-1" size={14} />
               Replace
@@ -103,7 +97,7 @@ export default function BannerUpload({
               onClick={handleDelete}
               disabled={isLoading}
               className="rounded-lg px-4 py-2 text-sm font-medium text-white transition-all"
-              style={{ background: colors.danger }}
+              style={{ background: "var(--color-danger)" }}
             >
               <FiTrash2 className="inline mr-1" size={14} />
               Remove
@@ -121,18 +115,25 @@ export default function BannerUpload({
           onDragLeave={onDragLeave}
           className="flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed py-12 transition-all"
           style={{
-            borderColor: isDragging ? AURORA_2 : GLASS_BORDER,
-            background: isDragging ? "rgba(0,212,170,0.05)" : GLASS,
+            borderColor: isDragging
+              ? "var(--color-aurora-teal)"
+              : "var(--color-glass-border)",
+            background: isDragging
+              ? "rgba(0,212,170,0.05)"
+              : "var(--color-glass)",
           }}
         >
-          <FiImage size={32} style={{ color: TEXT_DIM }} />
-          <p className="text-sm" style={{ color: TEXT_MUTED }}>
+          <FiImage size={32} style={{ color: "var(--color-text-dim)" }} />
+          <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
             Drag & drop or{" "}
-            <span className="font-medium" style={{ color: AURORA_2 }}>
+            <span
+              className="font-medium"
+              style={{ color: "var(--color-aurora-teal)" }}
+            >
               click to upload
             </span>
           </p>
-          <p className="text-xs" style={{ color: TEXT_DIM }}>
+          <p className="text-xs" style={{ color: "var(--color-text-dim)" }}>
             JPEG, PNG, GIF, WebP, AVIF — max 1 MB
           </p>
         </div>
@@ -151,7 +152,10 @@ export default function BannerUpload({
       />
 
       {error && (
-        <p className="text-xs font-medium" style={{ color: colors.danger }}>
+        <p
+          className="text-xs font-medium"
+          style={{ color: "var(--color-danger)" }}
+        >
           {error}
         </p>
       )}

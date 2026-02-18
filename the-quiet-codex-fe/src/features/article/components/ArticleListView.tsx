@@ -8,15 +8,6 @@ import {
 } from "../services/article.api";
 import ArticleCard from "./ArticleCard";
 import DeleteArticleDialog from "./DeleteArticleDialog";
-import {
-  DISPLAY,
-  TEXT_PRIMARY,
-  TEXT_MUTED,
-  TEXT_DIM,
-  GLASS,
-  GLASS_BORDER,
-  GRADIENT_PRIMARY,
-} from "../../../lib/theme";
 
 const LIMIT = 8;
 
@@ -47,7 +38,10 @@ export default function ArticleListView() {
           <div
             key={i}
             className="h-72 animate-pulse rounded-2xl"
-            style={{ background: GLASS, border: `1px solid ${GLASS_BORDER}` }}
+            style={{
+              background: "var(--color-glass)",
+              border: "1px solid var(--color-glass-border)",
+            }}
           />
         ))}
       </div>
@@ -58,22 +52,35 @@ export default function ArticleListView() {
     return (
       <div
         className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed py-20 text-center"
-        style={{ borderColor: GLASS_BORDER }}
+        style={{ borderColor: "var(--color-glass-border)" }}
       >
-        <FiBookOpen size={40} className="mb-4" style={{ color: TEXT_DIM }} />
+        <FiBookOpen
+          size={40}
+          className="mb-4"
+          style={{ color: "var(--color-text-dim)" }}
+        />
         <h3
           className="mb-2 text-2xl font-semibold"
-          style={{ fontFamily: DISPLAY, color: TEXT_PRIMARY }}
+          style={{
+            fontFamily: "var(--font-display)",
+            color: "var(--color-text-primary)",
+          }}
         >
           No articles yet
         </h3>
-        <p className="mb-6 text-sm" style={{ color: TEXT_MUTED }}>
+        <p
+          className="mb-6 text-sm"
+          style={{ color: "var(--color-text-muted)" }}
+        >
           Start writing your first article — your ideas are waiting to shine.
         </p>
         <Link
           to="/dashboard/articles/new"
           className="inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-medium text-white transition-all hover:brightness-110"
-          style={{ background: GRADIENT_PRIMARY }}
+          style={{
+            background:
+              "linear-gradient(135deg, var(--color-aurora-purple), var(--color-aurora-teal))",
+          }}
         >
           <FiBookOpen size={14} />
           Write your first article
@@ -105,13 +112,16 @@ export default function ArticleListView() {
             disabled={page === 1}
             className="inline-flex items-center gap-1 rounded-lg border px-4 py-2 text-sm font-medium transition-all disabled:opacity-30"
             style={{
-              borderColor: GLASS_BORDER,
-              color: TEXT_PRIMARY,
+              borderColor: "var(--color-glass-border)",
+              color: "var(--color-text-primary)",
             }}
           >
             <FiChevronLeft size={14} /> Previous
           </button>
-          <span className="text-sm" style={{ color: TEXT_MUTED }}>
+          <span
+            className="text-sm"
+            style={{ color: "var(--color-text-muted)" }}
+          >
             {page} / {data.totalPages}
           </span>
           <button
@@ -120,8 +130,8 @@ export default function ArticleListView() {
             disabled={page >= data.totalPages}
             className="inline-flex items-center gap-1 rounded-lg border px-4 py-2 text-sm font-medium transition-all disabled:opacity-30"
             style={{
-              borderColor: GLASS_BORDER,
-              color: TEXT_PRIMARY,
+              borderColor: "var(--color-glass-border)",
+              color: "var(--color-text-primary)",
             }}
           >
             Next <FiChevronRight size={14} />

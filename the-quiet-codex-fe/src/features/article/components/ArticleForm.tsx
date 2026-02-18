@@ -9,21 +9,6 @@ import {
 } from "../services/article.api";
 import ArticleEditor from "./ArticleEditor";
 import BannerUpload from "./BannerUpload";
-import {
-  DISPLAY,
-  SANS,
-  TEXT_PRIMARY,
-  TEXT_MUTED,
-  TEXT_DIM,
-  AURORA_1,
-  AURORA_2,
-  DEEP,
-  GLASS,
-  GLASS_BORDER,
-  GLASS_HOVER,
-  GRADIENT_PRIMARY,
-  colors,
-} from "../../../lib/theme";
 import { slugify } from "../../../lib/file-validation";
 
 interface ArticleFormProps {
@@ -118,7 +103,10 @@ export default function ArticleForm({ mode, initialData }: ArticleFormProps) {
         type="button"
         onClick={() => navigate("/dashboard")}
         className="inline-flex items-center gap-2 text-sm transition-colors hover:opacity-80"
-        style={{ color: TEXT_DIM, fontFamily: SANS }}
+        style={{
+          color: "var(--color-text-dim)",
+          fontFamily: "var(--font-sans)",
+        }}
       >
         <FiArrowLeft size={14} />
         Back to articles
@@ -136,11 +124,14 @@ export default function ArticleForm({ mode, initialData }: ArticleFormProps) {
         <input
           placeholder="Article title"
           className="w-full border-none bg-transparent text-4xl font-semibold outline-none placeholder:opacity-30"
-          style={{ fontFamily: DISPLAY, color: TEXT_PRIMARY }}
+          style={{
+            fontFamily: "var(--font-display)",
+            color: "var(--color-text-primary)",
+          }}
           {...register("title", { required: "Title is required" })}
         />
         {formState.errors.title && (
-          <p className="text-xs" style={{ color: colors.danger }}>
+          <p className="text-xs" style={{ color: "var(--color-danger)" }}>
             {formState.errors.title.message}
           </p>
         )}
@@ -150,7 +141,7 @@ export default function ArticleForm({ mode, initialData }: ArticleFormProps) {
       <div className="space-y-2">
         <label
           className="flex items-center gap-2 text-sm font-medium"
-          style={{ color: TEXT_MUTED }}
+          style={{ color: "var(--color-text-muted)" }}
         >
           Slug
           {mode === "create" && (
@@ -159,8 +150,12 @@ export default function ArticleForm({ mode, initialData }: ArticleFormProps) {
               onClick={() => setAutoSlug(!autoSlug)}
               className="rounded-full px-2 py-0.5 text-xs"
               style={{
-                background: autoSlug ? "rgba(0,212,170,0.1)" : GLASS,
-                color: autoSlug ? AURORA_2 : TEXT_DIM,
+                background: autoSlug
+                  ? "rgba(0,212,170,0.1)"
+                  : "var(--color-glass)",
+                color: autoSlug
+                  ? "var(--color-aurora-teal)"
+                  : "var(--color-text-dim)",
               }}
             >
               {autoSlug ? "Auto" : "Manual"}
@@ -171,9 +166,9 @@ export default function ArticleForm({ mode, initialData }: ArticleFormProps) {
           placeholder="my-article-slug"
           className="w-full rounded-xl border px-4 py-2.5 text-sm outline-none transition-colors"
           style={{
-            borderColor: GLASS_BORDER,
-            background: GLASS_HOVER,
-            color: TEXT_PRIMARY,
+            borderColor: "var(--color-glass-border)",
+            background: "var(--color-glass-hover)",
+            color: "var(--color-text-primary)",
           }}
           {...register("slug")}
           onChange={(e) => {
@@ -185,7 +180,10 @@ export default function ArticleForm({ mode, initialData }: ArticleFormProps) {
 
       {/* Meta description */}
       <div className="space-y-2">
-        <label className="text-sm font-medium" style={{ color: TEXT_MUTED }}>
+        <label
+          className="text-sm font-medium"
+          style={{ color: "var(--color-text-muted)" }}
+        >
           Meta Description
         </label>
         <textarea
@@ -193,20 +191,23 @@ export default function ArticleForm({ mode, initialData }: ArticleFormProps) {
           rows={2}
           className="w-full resize-none rounded-xl border px-4 py-2.5 text-sm outline-none transition-colors"
           style={{
-            borderColor: GLASS_BORDER,
-            background: GLASS_HOVER,
-            color: TEXT_PRIMARY,
+            borderColor: "var(--color-glass-border)",
+            background: "var(--color-glass-hover)",
+            color: "var(--color-text-primary)",
           }}
           {...register("metaDescription")}
         />
-        <p className="text-xs" style={{ color: TEXT_DIM }}>
+        <p className="text-xs" style={{ color: "var(--color-text-dim)" }}>
           {metaDescValue?.length ?? 0}/160 characters
         </p>
       </div>
 
       {/* Body editor */}
       <div className="space-y-2">
-        <label className="text-sm font-medium" style={{ color: TEXT_MUTED }}>
+        <label
+          className="text-sm font-medium"
+          style={{ color: "var(--color-text-muted)" }}
+        >
           Content
         </label>
         <Controller
@@ -218,7 +219,7 @@ export default function ArticleForm({ mode, initialData }: ArticleFormProps) {
           )}
         />
         {formState.errors.body && (
-          <p className="text-xs" style={{ color: colors.danger }}>
+          <p className="text-xs" style={{ color: "var(--color-danger)" }}>
             {formState.errors.body.message}
           </p>
         )}
@@ -227,7 +228,10 @@ export default function ArticleForm({ mode, initialData }: ArticleFormProps) {
       {/* Publish toggle */}
       <div
         className="flex items-center gap-3 rounded-xl border px-4 py-3"
-        style={{ borderColor: GLASS_BORDER, background: GLASS }}
+        style={{
+          borderColor: "var(--color-glass-border)",
+          background: "var(--color-glass)",
+        }}
       >
         <label className="relative inline-flex cursor-pointer items-center">
           <input
@@ -238,19 +242,22 @@ export default function ArticleForm({ mode, initialData }: ArticleFormProps) {
           <div
             className="h-6 w-11 rounded-full border peer-checked:border-transparent transition-colors after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all peer-checked:after:translate-x-full"
             style={{
-              borderColor: GLASS_BORDER,
-              background: GLASS_HOVER,
+              borderColor: "var(--color-glass-border)",
+              background: "var(--color-glass-hover)",
             }}
           />
           <style>{`
-            .peer:checked ~ div { background: ${AURORA_1} !important; }
+            .peer:checked ~ div { background: var(--color-aurora-purple) !important; }
           `}</style>
         </label>
         <div>
-          <p className="text-sm font-medium" style={{ color: TEXT_PRIMARY }}>
+          <p
+            className="text-sm font-medium"
+            style={{ color: "var(--color-text-primary)" }}
+          >
             Publish article
           </p>
-          <p className="text-xs" style={{ color: TEXT_DIM }}>
+          <p className="text-xs" style={{ color: "var(--color-text-dim)" }}>
             Published articles are visible to everyone. Unpublished articles are
             saved as drafts.
           </p>
@@ -262,9 +269,9 @@ export default function ArticleForm({ mode, initialData }: ArticleFormProps) {
         <div
           className="rounded-xl px-4 py-3 text-sm"
           style={{
-            background: colors.dangerBg,
-            color: colors.danger,
-            border: `1px solid ${colors.dangerBorder}`,
+            background: "var(--color-danger-bg)",
+            color: "var(--color-danger)",
+            border: "1px solid var(--color-danger-border)",
           }}
         >
           {serverError}
@@ -278,7 +285,10 @@ export default function ArticleForm({ mode, initialData }: ArticleFormProps) {
           disabled={isLoading}
           onClick={() => setValue("publish", true)}
           className="inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-medium text-white transition-all hover:brightness-110 disabled:opacity-60"
-          style={{ background: GRADIENT_PRIMARY }}
+          style={{
+            background:
+              "linear-gradient(135deg, var(--color-aurora-purple), var(--color-aurora-teal))",
+          }}
         >
           <FiSend size={14} />
           {mode === "create" ? "Publish" : "Update & Publish"}
@@ -289,8 +299,8 @@ export default function ArticleForm({ mode, initialData }: ArticleFormProps) {
           onClick={() => setValue("publish", false)}
           className="inline-flex items-center gap-2 rounded-lg border px-6 py-3 text-sm font-medium transition-all"
           style={{
-            borderColor: GLASS_BORDER,
-            color: TEXT_MUTED,
+            borderColor: "var(--color-glass-border)",
+            color: "var(--color-text-muted)",
           }}
         >
           <FiSave size={14} />

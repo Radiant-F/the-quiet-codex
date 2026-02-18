@@ -1,15 +1,5 @@
 import { Link } from "react-router-dom";
 import type { ArticleListItem } from "../article.domain";
-import {
-  DISPLAY,
-  SANS,
-  TEXT_PRIMARY,
-  TEXT_MUTED,
-  TEXT_DIM,
-  GLASS,
-  GLASS_BORDER,
-  GRADIENT_PRIMARY,
-} from "../../../lib/theme";
 
 interface PublicArticleCardProps {
   article: ArticleListItem;
@@ -27,8 +17,7 @@ export default function PublicArticleCard({ article }: PublicArticleCardProps) {
   return (
     <Link
       to={`/articles/${article.slug}`}
-      className="group flex flex-col overflow-hidden rounded-2xl border transition-all hover:border-[rgba(255,255,255,0.14)]"
-      style={{ borderColor: GLASS_BORDER, background: GLASS }}
+      className="group flex flex-col overflow-hidden rounded-2xl border transition-all hover:border-[rgba(255,255,255,0.14)] glass-panel"
     >
       {/* Banner */}
       {article.bannerImageUrl ? (
@@ -49,7 +38,10 @@ export default function PublicArticleCard({ article }: PublicArticleCardProps) {
         >
           <span
             className="text-6xl font-semibold opacity-15"
-            style={{ fontFamily: DISPLAY, color: TEXT_PRIMARY }}
+            style={{
+              fontFamily: "var(--font-display)",
+              color: "var(--color-text-primary)",
+            }}
           >
             {article.title.charAt(0)}
           </span>
@@ -60,7 +52,10 @@ export default function PublicArticleCard({ article }: PublicArticleCardProps) {
       <div className="flex flex-1 flex-col p-6">
         <h3
           className="mb-2 line-clamp-2 text-xl font-semibold leading-tight transition-colors group-hover:opacity-80"
-          style={{ fontFamily: DISPLAY, color: TEXT_PRIMARY }}
+          style={{
+            fontFamily: "var(--font-display)",
+            color: "var(--color-text-primary)",
+          }}
         >
           {article.title}
         </h3>
@@ -68,7 +63,10 @@ export default function PublicArticleCard({ article }: PublicArticleCardProps) {
         {article.metaDescription && (
           <p
             className="mb-4 line-clamp-2 flex-1 text-sm leading-relaxed"
-            style={{ color: TEXT_MUTED, fontFamily: SANS }}
+            style={{
+              color: "var(--color-text-muted)",
+              fontFamily: "var(--font-sans)",
+            }}
           >
             {article.metaDescription}
           </p>
@@ -77,7 +75,7 @@ export default function PublicArticleCard({ article }: PublicArticleCardProps) {
         {/* Author + date */}
         <div
           className="mt-auto flex items-center gap-3 pt-4"
-          style={{ borderTop: `1px solid ${GLASS_BORDER}` }}
+          style={{ borderTop: "1px solid var(--color-glass-border)" }}
         >
           {article.author.profilePictureUrl ? (
             <img
@@ -88,16 +86,22 @@ export default function PublicArticleCard({ article }: PublicArticleCardProps) {
           ) : (
             <div
               className="flex h-8 w-8 items-center justify-center rounded-lg text-xs font-semibold text-white"
-              style={{ background: GRADIENT_PRIMARY }}
+              style={{
+                background:
+                  "linear-gradient(135deg, var(--color-aurora-purple), var(--color-aurora-teal))",
+              }}
             >
               {article.author.username.charAt(0).toUpperCase()}
             </div>
           )}
           <div>
-            <p className="text-sm font-medium" style={{ color: TEXT_PRIMARY }}>
+            <p
+              className="text-sm font-medium"
+              style={{ color: "var(--color-text-primary)" }}
+            >
               {article.author.username}
             </p>
-            <p className="text-xs" style={{ color: TEXT_DIM }}>
+            <p className="text-xs" style={{ color: "var(--color-text-dim)" }}>
               {date}
             </p>
           </div>

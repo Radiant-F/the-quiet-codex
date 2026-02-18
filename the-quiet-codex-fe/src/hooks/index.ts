@@ -3,3 +3,5 @@ import type { RootState, AppDispatch } from "../redux/store";
 
 export const useAppSelector = useSelector.withTypes<RootState>();
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
+
+export { useScrollReveal } from "./useScrollReveal";

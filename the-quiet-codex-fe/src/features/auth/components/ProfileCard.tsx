@@ -1,14 +1,5 @@
 import { FiCalendar } from "react-icons/fi";
 import type { UserProfile } from "../auth.domain";
-import {
-  DISPLAY,
-  SANS,
-  TEXT_PRIMARY,
-  TEXT_DIM,
-  GLASS,
-  GLASS_BORDER,
-  GRADIENT_PRIMARY,
-} from "../../../lib/theme";
 
 interface ProfileCardProps {
   profile: UserProfile;
@@ -21,13 +12,7 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
   });
 
   return (
-    <div
-      className="flex items-center gap-6 rounded-2xl border p-6"
-      style={{
-        borderColor: GLASS_BORDER,
-        background: GLASS,
-      }}
-    >
+    <div className="glass-panel flex items-center gap-6 rounded-2xl p-6">
       {/* Avatar */}
       {profile.profilePictureUrl ? (
         <img
@@ -38,7 +23,10 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
       ) : (
         <div
           className="flex h-20 w-20 items-center justify-center rounded-xl text-2xl font-semibold text-white"
-          style={{ background: GRADIENT_PRIMARY }}
+          style={{
+            background:
+              "linear-gradient(135deg, var(--color-aurora-purple), var(--color-aurora-teal))",
+          }}
         >
           {profile.username.charAt(0).toUpperCase()}
         </div>
@@ -47,13 +35,19 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
       <div>
         <h2
           className="text-2xl font-semibold"
-          style={{ fontFamily: DISPLAY, color: TEXT_PRIMARY }}
+          style={{
+            fontFamily: "var(--font-display)",
+            color: "var(--color-text-primary)",
+          }}
         >
           {profile.username}
         </h2>
         <p
           className="mt-1 flex items-center gap-1.5 text-sm"
-          style={{ color: TEXT_DIM, fontFamily: SANS }}
+          style={{
+            color: "var(--color-text-dim)",
+            fontFamily: "var(--font-sans)",
+          }}
         >
           <FiCalendar size={13} />
           Member since {memberSince}
