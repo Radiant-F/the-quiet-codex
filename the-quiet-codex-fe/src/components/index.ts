@@ -1,2 +1,1 @@
-export { default as DashboardLayout } from "./DashboardLayout";
-export { default as DashboardHeader } from "./DashboardHeader";
+// Import and export global components
